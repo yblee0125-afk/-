@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>데이터 방탈출 게임 - 학생용</title>
+  <title>데이터 방탈출 게임</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
@@ -20,10 +20,6 @@
       margin: 0;
       font-size: 2rem;
       color: #93c5fd;
-    }
-    header p {
-      margin: 0.4rem 0 0;
-      color: #cbd5f5;
     }
     main {
       max-width: 900px;
@@ -50,14 +46,21 @@
       border: 1px solid #334155;
       font-size: 0.9rem;
     }
-    code {
+    textarea {
+      width: 100%;
+      height: 110px;
+      margin-top: 0.6rem;
       background: #020617;
-      padding: 0.1rem 0.25rem;
-      border-radius: 4px;
+      border: 1px solid #475569;
+      border-radius: 6px;
+      color: #e2e8f0;
+      font-size: 0.9rem;
+      padding: 0.5rem;
+      resize: vertical;
     }
     .hint-btn, .check-btn {
       padding: 0.45rem 1rem;
-      margin-top: 0.4rem;
+      margin-top: 0.5rem;
       margin-right: 0.4rem;
       border: 1px solid #475569;
       border-radius: 999px;
@@ -70,25 +73,18 @@
       background: #fde047;
       color: #1f2937;
     }
+    .hint-btn.hint-level2 {
+      background: #4ade80;
+      color: #064e3b;
+    }
     .hint-output, .feedback {
-      margin-top: 0.4rem;
-      padding: 0.6rem;
+      margin-top: 0.5rem;
+      padding: 0.7rem;
       background: #020617;
       border-radius: 6px;
       border: 1px dashed #475569;
-      font-size: 0.85rem;
-      white-space: pre-wrap;
-    }
-    .answer-input {
-      margin-top: 0.4rem;
-      width: 100%;
-      max-width: 420px;
-      padding: 0.45rem 0.6rem;
-      border-radius: 6px;
-      border: 1px solid #475569;
-      background: #020617;
-      color: #e2e8f0;
       font-size: 0.9rem;
+      white-space: pre-wrap;
     }
     .feedback.ok {
       border-color: #22c55e;
@@ -98,250 +94,254 @@
       border-color: #f97316;
       color: #fed7aa;
     }
-    .note {
-      font-size: 0.8rem;
-      color: #94a3b8;
-      margin-top: 0.3rem;
-    }
   </style>
 </head>
 <body>
 
 <header>
   <h1>🔐 데이터 방탈출 게임 (학생용)</h1>
-  <p>힌트를 보고 스스로 답을 입력해 보세요!</p>
+  <p>힌트를 보고 코드를 직접 작성해 보세요!</p>
 </header>
 
 <main>
-  <!-- Stage 1 -->
-  <section class="stage">
-    <h2>🗝 Stage 1 — 파일 만들기</h2>
-    <p>
-      아래 코드를 Jupyter Notebook에 직접 입력해서<br>
-      <code>stage1.csv</code> 파일을 만들고, 제대로 불러오는지 확인해 보세요.
-    </p>
-    <pre><code>import pandas as pd
 
-df = pd.DataFrame({
-    "조각": ["방1", "탈2", "출3", "성4", "공5"],
-    "힌트": ["문1", "문2", "문3", "문4", "문5"]
-})
+<!-- Stage 2 -->
+<section class="stage">
+  <h2>🔍 Stage 2 — 정규식 문제</h2>
+  <p>
+    아래 문장에서 <strong>정규식을 사용해 숫자 2025를 찾아내는 코드</strong>를 작성하세요.
+  </p>
 
-df.to_csv("stage1.csv", index=False)
-
-df_loaded = pd.read_csv("stage1.csv")
-df_loaded</code></pre>
-    <p class="note">이 파일은 나중에 Stage 5에서 "방탈출성공"을 만드는 단서가 됩니다.</p>
-  </section>
-
-  <!-- Stage 2 -->
-  <section class="stage">
-    <h2>🔍 Stage 2 — 정규식 문제</h2>
-    <p>
-      아래 문장에서 <strong>정규식을 사용해 찾아낼 값</strong>을 적어 보세요.
-    </p>
-    <pre><code>import re
+  <pre><code>import re
 text = "탈출코드는 2025년에 공개된다!"</code></pre>
-    <p>목표: 정규식으로 찾아낼 숫자를 적어보세요.</p>
 
-    <input id="s2-input" class="answer-input" placeholder="여기에 숫자를 적어보세요 (예: 2025)" />
-    <div>
-      <button class="check-btn" onclick="checkStage2()">정답 확인</button>
-      <button class="hint-btn" id="s2-hint-btn">힌트 보기</button>
-    </div>
-    <div id="s2-hint" class="hint-output"></div>
-    <div id="s2-feedback" class="feedback"></div>
-  </section>
+  <textarea id="s2-code" placeholder="여기에 파이썬 코드를 작성하세요"></textarea>
 
-  <!-- Stage 3 -->
-  <section class="stage">
-    <h2>🧮 Stage 3 — 배열 조각 퍼즐</h2>
-    <p>다음 배열의 값을 모두 곱했을 때 결과를 적어보세요.</p>
-    <pre><code>import numpy as np
-arr = np.array([2, 4, 6])
+  <div>
+    <button class="check-btn" onclick="checkStage2()">정답 확인</button>
+    <button class="hint-btn" id="s2-hint-btn">힌트 보기</button>
+  </div>
 
-# 여기에서 arr의 모든 값을 곱한 결과는?</code></pre>
+  <div id="s2-hint" class="hint-output"></div>
+  <div id="s2-feedback" class="feedback"></div>
+</section>
 
-    <input id="s3-input" class="answer-input" placeholder="여기에 결과 숫자를 적어보세요 (예: 48)" />
-    <div>
-      <button class="check-btn" onclick="checkStage3()">정답 확인</button>
-      <button class="hint-btn" id="s3-hint-btn">힌트 보기</button>
-    </div>
-    <div id="s3-hint" class="hint-output"></div>
-    <div id="s3-feedback" class="feedback"></div>
-  </section>
+<!-- Stage 3 -->
+<section class="stage">
+  <h2>🧮 Stage 3 — 배열 조각 퍼즐</h2>
+  <p>배열 <code>[2, 4, 6]</code>의 값을 모두 곱하는 코드를 작성하세요.</p>
 
-  <!-- Stage 4 -->
-  <section class="stage">
-    <h2>✂ Stage 4 — 인덱싱 · 슬라이싱</h2>
+  <pre><code>import numpy as np
+arr = np.array([2, 4, 6])</code></pre>
 
-    <h3>4-1. 인덱싱</h3>
-    <p>문자열 <code>word = "HELLO"</code>에서 <strong>두 번째 글자</strong>를 적어보세요.</p>
-    <input id="s4a-input" class="answer-input" placeholder="두 번째 글자를 한 글자만 적어보세요." />
-    <div>
-      <button class="check-btn" onclick="checkStage4a()">정답 확인</button>
-      <button class="hint-btn" id="s4a-hint-btn">힌트 보기</button>
-    </div>
-    <div id="s4a-hint" class="hint-output"></div>
-    <div id="s4a-feedback" class="feedback"></div>
+  <textarea id="s3-code" placeholder="여기에 파이썬 코드를 작성하세요"></textarea>
 
-    <h3 style="margin-top:1rem;">4-2. 슬라이싱</h3>
-    <p>문자열 <code>text = "ESCAPEROOM"</code>에서 <strong>"ROOM"</strong>만 잘라냈을 때의 결과를 적어보세요.</p>
-    <input id="s4b-input" class="answer-input" placeholder='잘라낸 결과를 적어보세요. (예: ROOM)' />
-    <div>
-      <button class="check-btn" onclick="checkStage4b()">정답 확인</button>
-      <button class="hint-btn" id="s4b-hint-btn">힌트 보기</button>
-    </div>
-    <div id="s4b-hint" class="hint-output"></div>
-    <div id="s4b-feedback" class="feedback"></div>
-  </section>
+  <div>
+    <button class="check-btn" onclick="checkStage3()">정답 확인</button>
+    <button class="hint-btn" id="s3-hint-btn">힌트 보기</button>
+  </div>
 
-  <!-- Stage 5 -->
-  <section class="stage">
-    <h2>🧪 Stage 5 — '방탈출성공' 만들기</h2>
-    <p>
-      Stage 1에서 만든 <code>stage1.csv</code>의 <code>"조각"</code> 열에는<br>
-      <code>"방1", "탈2", "출3", "성4", "공5"</code> 처럼 글자와 숫자가 함께 들어 있습니다.
-    </p>
-    <p>
-      정규식과 문자열 처리를 이용해서 <strong>숫자를 제거하고 글자만 남긴 다음,</strong><br>
-      글자들을 모두 이어붙였을 때 어떤 단어가 되는지 적어보세요.
-    </p>
+  <div id="s3-hint" class="hint-output"></div>
+  <div id="s3-feedback" class="feedback"></div>
+</section>
 
-    <input id="s5-input" class="answer-input" placeholder='최종 단어를 적어보세요. (예: 방탈출성공)' />
-    <div>
-      <button class="check-btn" onclick="checkStage5()">정답 확인</button>
-      <button class="hint-btn" id="s5-hint-btn">힌트 보기</button>
-    </div>
-    <div id="s5-hint" class="hint-output"></div>
-    <div id="s5-feedback" class="feedback"></div>
-    <p class="note">실제로는 Jupyter Notebook에서 코드를 실행해 보고, 여기에는 결과만 적어보면 좋아요.</p>
-  </section>
+<!-- Stage 4 -->
+<section class="stage">
+  <h2>✂ Stage 4 — 인덱싱 · 슬라이싱</h2>
+
+  <h3>4-1. 인덱싱</h3>
+  <p>문자열 <code>word = "HELLO"</code>에서 <strong>두 번째 글자</strong>를 꺼내는 코드를 작성하세요.</p>
+
+  <textarea id="s4a-code" placeholder="예: word[1]"></textarea>
+
+  <div>
+    <button class="check-btn" onclick="checkStage4a()">정답 확인</button>
+    <button class="hint-btn" id="s4a-hint-btn">힌트 보기</button>
+  </div>
+
+  <div id="s4a-hint" class="hint-output"></div>
+  <div id="s4a-feedback" class="feedback"></div>
+
+  <h3 style="margin-top:1rem;">4-2. 슬라이싱</h3>
+  <p><code>text = "ESCAPEROOM"</code>에서 <strong>"ROOM"</strong>을 꺼내는 코드를 작성하세요.</p>
+
+  <textarea id="s4b-code" placeholder="예: text[5:9]"></textarea>
+
+  <div>
+    <button class="check-btn" onclick="checkStage4b()">정답 확인</button>
+    <button class="hint-btn" id="s4b-hint-btn">힌트 보기</button>
+  </div>
+
+  <div id="s4b-hint" class="hint-output"></div>
+  <div id="s4b-feedback" class="feedback"></div>
+</section>
+
+<!-- Stage 5 -->
+<section class="stage">
+  <h2>🧪 Stage 5 — '방탈출성공' 만들기</h2>
+  <p>
+    글자와 숫자가 섞인 데이터(<code>"방1", "탈2"</code> 등)에서 <strong>숫자를 제거하고 글자만 남기는 코드</strong>를 작성한 뒤,  
+    이어붙여 어떤 단어가 되는지 확인하는 코드를 작성하세요.
+  </p>
+
+  <textarea id="s5-code" placeholder="힌트: str.replace() 와 정규식 사용"></textarea>
+
+  <div>
+    <button class="check-btn" onclick="checkStage5()">정답 확인</button>
+    <button class="hint-btn" id="s5-hint-btn">힌트 보기</button>
+  </div>
+
+  <div id="s5-hint" class="hint-output"></div>
+  <div id="s5-feedback" class="feedback"></div>
+
+</section>
+
 </main>
 
 <script>
-  // 공통: 힌트 버튼 1번 클릭 → 힌트, 2번 클릭 → "정답은 수업에서"
-  function setupHintButton(idBtn, idOut, hintText) {
-    const btn = document.getElementById(idBtn);
-    const out = document.getElementById(idOut);
-    if (!btn || !out) return;
-    btn.dataset.clicks = "0";
-    btn.addEventListener("click", () => {
-      let c = Number(btn.dataset.clicks) + 1;
-      btn.dataset.clicks = c;
-      if (c === 1) {
-        btn.classList.add("hint-level1");
-        out.textContent = "💡 힌트: " + hintText;
-      } else {
-        btn.classList.add("hint-level2");
-        out.textContent = "❗ 정답 코드는 수업 시간에 함께 확인해 봅시다!";
-      }
-    });
-  }
+/* ------------------------
+   힌트 버튼 제어
+-------------------------*/
+function setupHintButton(btnId, outputId, hintText, answerText) {
+  const btn = document.getElementById(btnId);
+  const out = document.getElementById(outputId);
+  btn.dataset.clicks = "0";
 
-  // Stage 2 정답: 2025
-  function checkStage2() {
-    const input = document.getElementById("s2-input").value.trim();
-    const fb = document.getElementById("s2-feedback");
-    fb.classList.remove("ok", "no");
-    if (!input) {
-      fb.textContent = "값을 먼저 입력해 보세요!";
-      fb.classList.add("no");
-      return;
-    }
-    if (input === "2025") {
-      fb.textContent = "정답! 정규식으로 찾아낼 숫자는 2025입니다. 🎉";
-      fb.classList.add("ok");
+  btn.addEventListener("click", () => {
+    let c = Number(btn.dataset.clicks) + 1;
+    btn.dataset.clicks = c;
+    out.textContent = "";
+
+    if (c === 1) {
+      btn.classList.add("hint-level1");
+      out.textContent = "💡 힌트: " + hintText;
     } else {
-      fb.textContent = "아쉽어요! 다시 한 번 생각해 보거나 힌트를 눌러보세요.";
-      fb.classList.add("no");
+      btn.classList.remove("hint-level1");
+      btn.classList.add("hint-level2");
+      out.textContent = "✅ 정답 코드:\n\n" + answerText;
     }
-  }
-
-  // Stage 3 정답: 2*4*6 = 48
-  function checkStage3() {
-    const input = document.getElementById("s3-input").value.trim();
-    const fb = document.getElementById("s3-feedback");
-    fb.classList.remove("ok", "no");
-    if (!input) {
-      fb.textContent = "값을 먼저 입력해 보세요!";
-      fb.classList.add("no");
-      return;
-    }
-    if (input === "48") {
-      fb.textContent = "정답! 배열 [2,4,6]의 값을 모두 곱하면 48입니다. 🎉";
-      fb.classList.add("ok");
-    } else {
-      fb.textContent = "조금 더 계산해 볼까요? 다시 해보거나 힌트를 눌러보세요.";
-      fb.classList.add("no");
-    }
-  }
-
-  // Stage 4-1 정답: E
-  function checkStage4a() {
-    const input = document.getElementById("s4a-input").value.trim().toUpperCase();
-    const fb = document.getElementById("s4a-feedback");
-    fb.classList.remove("ok", "no");
-    if (!input) {
-      fb.textContent = "글자를 입력해 보세요!";
-      fb.classList.add("no");
-      return;
-    }
-    if (input === "E") {
-      fb.textContent = "정답! 두 번째 글자는 E입니다. (word[1]) 🎉";
-      fb.classList.add("ok");
-    } else {
-      fb.textContent = "인덱스는 0부터 시작한다는 것을 기억해 보세요.";
-      fb.classList.add("no");
-    }
-  }
-
-  // Stage 4-2 정답: ROOM
-  function checkStage4b() {
-    const input = document.getElementById("s4b-input").value.trim().toUpperCase();
-    const fb = document.getElementById("s4b-feedback");
-    fb.classList.remove("ok", "no");
-    if (!input) {
-      fb.textContent = "글자를 입력해 보세요!";
-      fb.classList.add("no");
-      return;
-    }
-    if (input === "ROOM") {
-      fb.textContent = "정답! text[5:9]의 결과는 ROOM입니다. 🎉";
-      fb.classList.add("ok");
-    } else {
-      fb.textContent = "슬라이싱 범위를 다시 한 번 생각해 보세요.";
-      fb.classList.add("no");
-    }
-  }
-
-  // Stage 5 정답: 방탈출성공
-  function checkStage5() {
-    const input = document.getElementById("s5-input").value.trim();
-    const fb = document.getElementById("s5-feedback");
-    fb.classList.remove("ok", "no");
-    if (!input) {
-      fb.textContent = "최종 단어를 입력해 보세요!";
-      fb.classList.add("no");
-      return;
-    }
-    if (input === "방탈출성공") {
-      fb.textContent = "🎉 최종 정답! 방탈출성공! 축하합니다!";
-      fb.classList.add("ok");
-    } else {
-      fb.textContent = "아직 완벽하지 않아요. 숫자를 잘 지웠는지 다시 확인해 보세요.";
-      fb.classList.add("no");
-    }
-  }
-
-  // 힌트 세팅
-  document.addEventListener("DOMContentLoaded", () => {
-    setupHintButton("s2-hint-btn", "s2-hint", "re.search 또는 re.findall로 '2025'를 찾아낼 수 있어요.");
-    setupHintButton("s3-hint-btn", "s3-hint", "np.prod(arr)를 사용하면 배열의 값을 모두 곱할 수 있어요.");
-    setupHintButton("s4a-hint-btn", "s4a-hint", "파이썬은 0부터 시작해요. H는 0, E는 1입니다!");
-    setupHintButton("s4b-hint-btn", "s4b-hint", "슬라이싱은 text[시작:끝] 형태예요. R의 위치를 먼저 세어보세요.");
-    setupHintButton("s5-hint-btn", "s5-hint", "df['조각'].str.replace(r\"\\d+\", \"\", regex=True) 로 숫자를 지울 수 있어요.");
   });
+}
+
+/* ------------------------
+   Stage 2 채점
+-------------------------*/
+function checkStage2() {
+  const code = document.getElementById("s2-code").value;
+  const fb = document.getElementById("s2-feedback");
+  fb.classList.remove("ok", "no");
+
+  if (code.includes("re.search") && code.includes("2025")) {
+    fb.textContent = "🎉 정답입니다!";
+    fb.classList.add("ok");
+  } else {
+    fb.textContent = "아쉬워요! 힌트를 눌러보세요.";
+    fb.classList.add("no");
+  }
+}
+
+/* ------------------------
+   Stage 3: 정답 48
+-------------------------*/
+function checkStage3() {
+  const code = document.getElementById("s3-code").value;
+  const fb = document.getElementById("s3-feedback");
+  fb.classList.remove("ok", "no");
+
+  if (code.includes("np.prod") && code.includes("arr")) {
+    fb.textContent = "🎉 정답! 48을 구하는 올바른 코드입니다.";
+    fb.classList.add("ok");
+  } else {
+    fb.textContent = "조금 더 생각해 보세요!";
+    fb.classList.add("no");
+  }
+}
+
+/* ------------------------
+   Stage 4-1: 정답 word[1]
+-------------------------*/
+function checkStage4a() {
+  const code = document.getElementById("s4a-code").value.trim();
+  const fb = document.getElementById("s4a-feedback");
+  fb.classList.remove("ok", "no");
+
+  if (code.replace(/\s/g, "") === "word[1]") {
+    fb.textContent = "🎉 정답!";
+    fb.classList.add("ok");
+  } else {
+    fb.textContent = "인덱싱은 0부터 시작해요!";
+    fb.classList.add("no");
+  }
+}
+
+/* ------------------------
+   Stage 4-2: 정답 text[5:9]
+-------------------------*/
+function checkStage4b() {
+  const code = document.getElementById("s4b-code").value.replace(/\s/g, "");
+  const fb = document.getElementById("s4b-feedback");
+  fb.classList.remove("ok", "no");
+
+  if (code === "text[5:9]") {
+    fb.textContent = "🎉 정답!";
+    fb.classList.add("ok");
+  } else {
+    fb.textContent = "슬라이싱 범위를 다시 확인해 보세요!";
+    fb.classList.add("no");
+  }
+}
+
+/* ------------------------
+   Stage 5: 숫자 제거 + join → 방탈출성공
+-------------------------*/
+function checkStage5() {
+  const code = document.getElementById("s5-code").value;
+  const fb = document.getElementById("s5-feedback");
+  fb.classList.remove("ok", "no");
+
+  if (
+    code.includes("str.replace") &&
+    code.includes("\\d+") &&
+    code.includes("''.join") ||
+    code.includes('"".join')
+  ) {
+    fb.textContent = "🎉 정답! '방탈출성공'을 만드는 코드입니다!";
+    fb.classList.add("ok");
+  } else {
+    fb.textContent = "숫자를 지우고(join) 글자를 이어붙이는 과정을 떠올려보세요!";
+    fb.classList.add("no");
+  }
+}
+
+/* ------------------------
+   힌트 버튼 등록
+-------------------------*/
+document.addEventListener("DOMContentLoaded", () => {
+  setupHintButton("s2-hint-btn", "s2-hint",
+    "re.search 또는 re.findall을 사용할 수 있어요.",
+    'import re\ntext = "탈출코드는 2025년에 공개된다!"\nre.search(r"2025", text)'
+  );
+
+  setupHintButton("s3-hint-btn", "s3-hint",
+    "np.prod(arr)를 사용해 보세요!",
+    'import numpy as np\narr = np.array([2,4,6])\nnp.prod(arr)'
+  );
+
+  setupHintButton("s4a-hint-btn", "s4a-hint",
+    "파이썬은 0부터 시작해요!",
+    'word = "HELLO"\nword[1]'
+  );
+
+  setupHintButton("s4b-hint-btn", "s4b-hint",
+    "슬라이싱은 text[시작:끝] 형태예요.",
+    'text = "ESCAPEROOM"\ntext[5:9]'
+  );
+
+  setupHintButton("s5-hint-btn", "s5-hint",
+    "str.replace와 정규식을 함께 사용!",
+    'df["글자만"] = df["조각"].str.replace(r"\\d+","",regex=True)\n"".join(df["글자만"])'
+  );
+});
 </script>
 
 </body>

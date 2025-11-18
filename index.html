@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8" />
-  <title>데이터 방탈출 게임</title>
+  <title>데이터 방탈출 게임 - 학생용</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
     body {
@@ -99,102 +99,128 @@
 <body>
 
 <header>
-  <h1>🔐 데이터 방탈출 게임 🔐</h1>
+  <h1>🔐 데이터 방탈출 게임 🔐<h1>
   <p>힌트를 보고 코드를 직접 작성해 보세요!</p>
 </header>
 
 <main>
 
-<!-- Stage 2 -->
-<section class="stage">
-  <h2>🔍 Stage 2 — 정규식 문제</h2>
-  <p>
-    아래 문장에서 <strong>정규식을 사용해 숫자 2025를 찾아내는 코드</strong>를 작성하세요.
-  </p>
+  <!-- Stage 1 -->
+  <section class="stage">
+    <h2>🗝 Stage 1 — 파일 만들기 & 불러오기</h2>
+    <p>
+      Jupyter Notebook에서 아래 코드를 직접 입력해서<br>
+      <code>stage1.csv</code> 파일을 만들고, 제대로 불러오는지 확인해 보세요.
+    </p>
 
-  <pre><code>import re
+    <pre><code>import pandas as pd
+
+df = pd.DataFrame({
+    "조각": ["방1", "탈2", "출3", "성4", "공5"],
+    "힌트": ["문1", "문2", "문3", "문4", "문5"]
+})
+
+df.to_csv("stage1.csv", index=False)
+
+df_loaded = pd.read_csv("stage1.csv")
+df_loaded</code></pre>
+
+    <p>
+      👉 이 파일은 나중에 <strong>Stage 5</strong>에서<br>
+      <code>"방탈출성공"</code> 이라는 단어를 만드는 단서로 사용됩니다.
+    </p>
+  </section>
+
+  <!-- Stage 2 -->
+  <section class="stage">
+    <h2>🔍 Stage 2 — 정규식 문제</h2>
+    <p>
+      아래 문장에서 <strong>정규식을 사용해 숫자 2025를 찾아내는 코드</strong>를 작성하세요.
+    </p>
+
+    <pre><code>import re
 text = "탈출코드는 2025년에 공개된다!"</code></pre>
 
-  <textarea id="s2-code" placeholder="여기에 파이썬 코드를 작성하세요"></textarea>
+    <textarea id="s2-code" placeholder="여기에 파이썬 코드를 작성하세요"></textarea>
 
-  <div>
-    <button class="check-btn" onclick="checkStage2()">정답 확인</button>
-    <button class="hint-btn" id="s2-hint-btn">힌트 보기</button>
-  </div>
+    <div>
+      <button class="check-btn" onclick="checkStage2()">정답 확인</button>
+      <button class="hint-btn" id="s2-hint-btn">힌트 보기</button>
+    </div>
 
-  <div id="s2-hint" class="hint-output"></div>
-  <div id="s2-feedback" class="feedback"></div>
-</section>
+    <div id="s2-hint" class="hint-output"></div>
+    <div id="s2-feedback" class="feedback"></div>
+  </section>
 
-<!-- Stage 3 -->
-<section class="stage">
-  <h2>🧮 Stage 3 — 배열 조각 퍼즐</h2>
-  <p>배열 <code>[2, 4, 6]</code>의 값을 모두 곱하는 코드를 작성하세요.</p>
+  <!-- Stage 3 -->
+  <section class="stage">
+    <h2>🧮 Stage 3 — 배열 조각 퍼즐</h2>
+    <p>배열 <code>[2, 4, 6]</code>의 값을 모두 곱하는 코드를 작성하세요.</p>
 
-  <pre><code>import numpy as np
+    <pre><code>import numpy as np
 arr = np.array([2, 4, 6])</code></pre>
 
-  <textarea id="s3-code" placeholder="여기에 파이썬 코드를 작성하세요"></textarea>
+    <textarea id="s3-code" placeholder="여기에 파이썬 코드를 작성하세요"></textarea>
 
-  <div>
-    <button class="check-btn" onclick="checkStage3()">정답 확인</button>
-    <button class="hint-btn" id="s3-hint-btn">힌트 보기</button>
-  </div>
+    <div>
+      <button class="check-btn" onclick="checkStage3()">정답 확인</button>
+      <button class="hint-btn" id="s3-hint-btn">힌트 보기</button>
+    </div>
 
-  <div id="s3-hint" class="hint-output"></div>
-  <div id="s3-feedback" class="feedback"></div>
-</section>
+    <div id="s3-hint" class="hint-output"></div>
+    <div id="s3-feedback" class="feedback"></div>
+  </section>
 
-<!-- Stage 4 -->
-<section class="stage">
-  <h2>✂ Stage 4 — 인덱싱 · 슬라이싱</h2>
+  <!-- Stage 4 -->
+  <section class="stage">
+    <h2>✂ Stage 4 — 인덱싱 · 슬라이싱</h2>
 
-  <h3>4-1. 인덱싱</h3>
-  <p>문자열 <code>word = "HELLO"</code>에서 <strong>두 번째 글자</strong>를 꺼내는 코드를 작성하세요.</p>
+    <h3>4-1. 인덱싱</h3>
+    <p>문자열 <code>word = "HELLO"</code>에서 <strong>두 번째 글자</strong>를 꺼내는 코드를 작성하세요.</p>
 
-  <textarea id="s4a-code" placeholder="예: word[1]"></textarea>
+    <textarea id="s4a-code" placeholder="예: word[1]"></textarea>
 
-  <div>
-    <button class="check-btn" onclick="checkStage4a()">정답 확인</button>
-    <button class="hint-btn" id="s4a-hint-btn">힌트 보기</button>
-  </div>
+    <div>
+      <button class="check-btn" onclick="checkStage4a()">정답 확인</button>
+      <button class="hint-btn" id="s4a-hint-btn">힌트 보기</button>
+    </div>
 
-  <div id="s4a-hint" class="hint-output"></div>
-  <div id="s4a-feedback" class="feedback"></div>
+    <div id="s4a-hint" class="hint-output"></div>
+    <div id="s4a-feedback" class="feedback"></div>
 
-  <h3 style="margin-top:1rem;">4-2. 슬라이싱</h3>
-  <p><code>text = "ESCAPEROOM"</code>에서 <strong>"ROOM"</strong>을 꺼내는 코드를 작성하세요.</p>
+    <h3 style="margin-top:1rem;">4-2. 슬라이싱</h3>
+    <p><code>text = "ESCAPEROOM"</code>에서 <strong>"ROOM"</strong>을 꺼내는 코드를 작성하세요.</p>
 
-  <textarea id="s4b-code" placeholder="예: text[5:9]"></textarea>
+    <textarea id="s4b-code" placeholder="예: text[5:9]"></textarea>
 
-  <div>
-    <button class="check-btn" onclick="checkStage4b()">정답 확인</button>
-    <button class="hint-btn" id="s4b-hint-btn">힌트 보기</button>
-  </div>
+    <div>
+      <button class="check-btn" onclick="checkStage4b()">정답 확인</button>
+      <button class="hint-btn" id="s4b-hint-btn">힌트 보기</button>
+    </div>
 
-  <div id="s4b-hint" class="hint-output"></div>
-  <div id="s4b-feedback" class="feedback"></div>
-</section>
+    <div id="s4b-hint" class="hint-output"></div>
+    <div id="s4b-feedback" class="feedback"></div>
+  </section>
 
-<!-- Stage 5 -->
-<section class="stage">
-  <h2>🧪 Stage 5 — '방탈출성공' 만들기</h2>
-  <p>
-    글자와 숫자가 섞인 데이터(<code>"방1", "탈2"</code> 등)에서 <strong>숫자를 제거하고 글자만 남기는 코드</strong>를 작성한 뒤,  
-    이어붙여 어떤 단어가 되는지 확인하는 코드를 작성하세요.
-  </p>
+  <!-- Stage 5 -->
+  <section class="stage">
+    <h2>🧪 Stage 5 — '방탈출성공' 만들기</h2>
+    <p>
+      글자와 숫자가 섞인 데이터(<code>"방1", "탈2"</code> 등)에서
+      <strong>숫자를 제거하고 글자만 남기는 코드</strong>를 작성한 뒤,<br>
+      이어붙여 어떤 단어가 되는지 확인하는 코드를 작성하세요.
+    </p>
 
-  <textarea id="s5-code" placeholder="힌트: str.replace() 와 정규식 사용"></textarea>
+    <textarea id="s5-code" placeholder="힌트: str.replace() 와 정규식 사용"></textarea>
 
-  <div>
-    <button class="check-btn" onclick="checkStage5()">정답 확인</button>
-    <button class="hint-btn" id="s5-hint-btn">힌트 보기</button>
-  </div>
+    <div>
+      <button class="check-btn" onclick="checkStage5()">정답 확인</button>
+      <button class="hint-btn" id="s5-hint-btn">힌트 보기</button>
+    </div>
 
-  <div id="s5-hint" class="hint-output"></div>
-  <div id="s5-feedback" class="feedback"></div>
-
-</section>
+    <div id="s5-hint" class="hint-output"></div>
+    <div id="s5-feedback" class="feedback"></div>
+  </section>
 
 </main>
 
@@ -302,8 +328,9 @@ function checkStage5() {
   if (
     code.includes("str.replace") &&
     code.includes("\\d+") &&
-    code.includes("''.join") ||
-    code.includes('"".join')
+    (code.includes("''.join") || code.includes('"".
+join') || code.includes('"".
+join') || code.includes('"".join') )
   ) {
     fb.textContent = "🎉 정답! '방탈출성공'을 만드는 코드입니다!";
     fb.classList.add("ok");

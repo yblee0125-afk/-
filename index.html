@@ -267,7 +267,7 @@ function checkStage2() {
 }
 
 /* ------------------------
-   Stage 3: 정답 48
+   Stage 3: np.prod(arr)
 -------------------------*/
 function checkStage3() {
   const code = document.getElementById("s3-code").value;
@@ -275,16 +275,16 @@ function checkStage3() {
   fb.classList.remove("ok", "no");
 
   if (code.includes("np.prod") && code.includes("arr")) {
-    fb.textContent = "🎉 정답! 48을 구하는 올바른 코드입니다.";
+    fb.textContent = "🎉 정답! 배열 [2,4,6]의 곱을 구하는 올바른 코드입니다.";
     fb.classList.add("ok");
   } else {
-    fb.textContent = "조금 더 생각해 보세요!";
+    fb.textContent = "조금 더 생각해 보세요! 배열 전체를 곱하는 함수를 떠올려보세요.";
     fb.classList.add("no");
   }
 }
 
 /* ------------------------
-   Stage 4-1: 정답 word[1]
+   Stage 4-1: word[1]
 -------------------------*/
 function checkStage4a() {
   const code = document.getElementById("s4a-code").value.trim();
@@ -292,16 +292,16 @@ function checkStage4a() {
   fb.classList.remove("ok", "no");
 
   if (code.replace(/\s/g, "") === "word[1]") {
-    fb.textContent = "🎉 정답!";
+    fb.textContent = "🎉 정답! 두 번째 글자는 word[1]로 꺼낼 수 있어요.";
     fb.classList.add("ok");
   } else {
-    fb.textContent = "인덱싱은 0부터 시작해요!";
+    fb.textContent = "인덱싱은 0부터 시작해요! H=0, E=1입니다.";
     fb.classList.add("no");
   }
 }
 
 /* ------------------------
-   Stage 4-2: 정답 text[5:9]
+   Stage 4-2: text[5:9]
 -------------------------*/
 function checkStage4b() {
   const code = document.getElementById("s4b-code").value.replace(/\s/g, "");
@@ -309,33 +309,32 @@ function checkStage4b() {
   fb.classList.remove("ok", "no");
 
   if (code === "text[5:9]") {
-    fb.textContent = "🎉 정답!";
+    fb.textContent = "🎉 정답! text[5:9]의 결과는 ROOM입니다.";
     fb.classList.add("ok");
   } else {
-    fb.textContent = "슬라이싱 범위를 다시 확인해 보세요!";
+    fb.textContent = "슬라이싱 범위를 다시 확인해 보세요! R의 위치는 5입니다.";
     fb.classList.add("no");
   }
 }
 
 /* ------------------------
-   Stage 5: 숫자 제거 + join → 방탈출성공
+   Stage 5: str.replace + \d+ + .join
 -------------------------*/
 function checkStage5() {
   const code = document.getElementById("s5-code").value;
   const fb = document.getElementById("s5-feedback");
   fb.classList.remove("ok", "no");
 
+  // 간단한 문자열 검사: 숫자 제거 + join 사용 여부
   if (
     code.includes("str.replace") &&
     code.includes("\\d+") &&
-    (code.includes("''.join") || code.includes('"".
-join') || code.includes('"".
-join') || code.includes('"".join') )
+    code.includes(".join")
   ) {
     fb.textContent = "🎉 정답! '방탈출성공'을 만드는 코드입니다!";
     fb.classList.add("ok");
   } else {
-    fb.textContent = "숫자를 지우고(join) 글자를 이어붙이는 과정을 떠올려보세요!";
+    fb.textContent = "숫자를 지우고(.replace), 글자만 모아서(.join) 이어붙이는 과정을 떠올려보세요!";
     fb.classList.add("no");
   }
 }
@@ -344,29 +343,39 @@ join') || code.includes('"".join') )
    힌트 버튼 등록
 -------------------------*/
 document.addEventListener("DOMContentLoaded", () => {
-  setupHintButton("s2-hint-btn", "s2-hint",
+  setupHintButton(
+    "s2-hint-btn",
+    "s2-hint",
     "re.search 또는 re.findall을 사용할 수 있어요.",
     'import re\ntext = "탈출코드는 2025년에 공개된다!"\nre.search(r"2025", text)'
   );
 
-  setupHintButton("s3-hint-btn", "s3-hint",
+  setupHintButton(
+    "s3-hint-btn",
+    "s3-hint",
     "np.prod(arr)를 사용해 보세요!",
     'import numpy as np\narr = np.array([2,4,6])\nnp.prod(arr)'
   );
 
-  setupHintButton("s4a-hint-btn", "s4a-hint",
-    "파이썬은 0부터 시작해요!",
+  setupHintButton(
+    "s4a-hint-btn",
+    "s4a-hint",
+    "파이썬은 0부터 시작해요! H=0, E=1입니다.",
     'word = "HELLO"\nword[1]'
   );
 
-  setupHintButton("s4b-hint-btn", "s4b-hint",
-    "슬라이싱은 text[시작:끝] 형태예요.",
+  setupHintButton(
+    "s4b-hint-btn",
+    "s4b-hint",
+    "슬라이싱은 text[시작:끝] 형태예요. R의 인덱스를 잘 세어보세요.",
     'text = "ESCAPEROOM"\ntext[5:9]'
   );
 
-  setupHintButton("s5-hint-btn", "s5-hint",
-    "str.replace와 정규식을 함께 사용!",
-    'df["글자만"] = df["조각"].str.replace(r"\\d+","",regex=True)\n"".join(df["글자만"])'
+  setupHintButton(
+    "s5-hint-btn",
+    "s5-hint",
+    "df['조각'].str.replace(r\"\\d+\", \"\", regex=True) 로 숫자를 없앤 뒤, \"\".join(...) 으로 이어붙일 수 있어요.",
+    'df["글자만"] = df["조각"].str.replace(r"\\d+", "", regex=True)\n"".join(df["글자만"])'
   );
 });
 </script>

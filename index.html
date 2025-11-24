@@ -1,384 +1,334 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <title>데이터 방탈출 게임 - 학생용</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <title>파이썬 복습 게임 - 아이돌 & 방탈출</title>
   <style>
     body {
-      font-family: system-ui, sans-serif;
-      background: #0f172a;
-      color: #e2e8f0;
-      margin: 0;
-    }
-    header {
-      text-align: center;
-      padding: 2rem 1rem;
-      background: #1e293b;
-    }
-    header h1 {
-      margin: 0;
-      font-size: 2rem;
-      color: #93c5fd;
-    }
-    main {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+      padding: 16px;
       max-width: 900px;
       margin: 0 auto;
-      padding: 1rem;
+    }
+    h1, h2, h3 {
+      margin-top: 1.4em;
+    }
+    .chapter {
+      border: 1px solid #ccc;
+      padding: 12px 16px;
+      margin-bottom: 20px;
+      border-radius: 8px;
     }
     .stage {
-      background: #1e293b;
-      padding: 1.2rem 1.5rem;
-      border-radius: 12px;
-      margin-bottom: 1.2rem;
-      border: 1px solid #334155;
+      border-top: 1px dashed #ddd;
+      padding-top: 10px;
+      margin-top: 10px;
     }
-    .stage h2 {
-      margin-top: 0;
-      font-size: 1.3rem;
-      color: #bfdbfe;
-    }
-    pre {
-      background: #020617;
-      padding: 0.75rem;
-      border-radius: 8px;
-      overflow-x: auto;
-      border: 1px solid #334155;
-      font-size: 0.9rem;
-    }
-    textarea {
-      width: 100%;
-      height: 110px;
-      margin-top: 0.6rem;
-      background: #020617;
-      border: 1px solid #475569;
-      border-radius: 6px;
-      color: #e2e8f0;
-      font-size: 0.9rem;
-      padding: 0.5rem;
-      resize: vertical;
-    }
-    .hint-btn, .check-btn {
-      padding: 0.45rem 1rem;
-      margin-top: 0.5rem;
-      margin-right: 0.4rem;
-      border: 1px solid #475569;
-      border-radius: 999px;
-      background: #1e293b;
-      color: white;
-      cursor: pointer;
-      font-size: 0.85rem;
-    }
-    .hint-btn.hint-level1 {
-      background: #fde047;
-      color: #1f2937;
-    }
-    .hint-btn.hint-level2 {
-      background: #4ade80;
-      color: #064e3b;
-    }
-    .hint-output, .feedback {
-      margin-top: 0.5rem;
-      padding: 0.7rem;
-      background: #020617;
-      border-radius: 6px;
-      border: 1px dashed #475569;
-      font-size: 0.9rem;
+    .code {
+      background: #f5f5f5;
+      padding: 8px 10px;
+      border-radius: 4px;
+      font-family: "Fira Code", Consolas, monospace;
       white-space: pre-wrap;
     }
-    .feedback.ok {
-      border-color: #22c55e;
-      color: #bbf7d0;
+    .question {
+      margin: 8px 0;
+      padding: 8px 10px;
+      background: #fafafa;
+      border-radius: 6px;
+      border: 1px solid #eee;
     }
-    .feedback.no {
-      border-color: #f97316;
-      color: #fed7aa;
+    .result {
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    button {
+      margin-top: 8px;
+      padding: 6px 10px;
+      cursor: pointer;
     }
   </style>
 </head>
 <body>
+  <h1>파이썬 복습 게임 🎮</h1>
+  <p>
+    수업이 끝난 뒤, 이 페이지를 보면서 <strong>파이썬(Jupyter) 수업 내용을 복습</strong해 보세요.<br>
+    각 챕터는 원하는 만큼 다시 실행하면서 즐겨도 됩니다.
+  </p>
 
-<header>
-  <h1>🔐 데이터 방탈출 게임 🔐</h1>
-  <p>힌트를 보고 코드를 직접 작성해 보세요!</p>
-</header>
+  <hr>
 
-<main>
-
-  <!-- Stage 1 -->
-  <section class="stage">
-    <h2>🗝 Stage 1 — 파일 만들기 & 불러오기</h2>
+  <!-- ===================== 챕터 1: 아이돌 스토리북 ===================== -->
+  <div class="chapter" id="chapter1">
+    <h2>📙 챕터 1. 아이돌 데이터 스토리북</h2>
     <p>
-      Jupyter Notebook에서 아래 코드를 직접 입력해서<br>
-      <code>stage1.csv</code> 파일을 만들고, 제대로 불러오는지 확인해 보세요.
+      너는 이제 <strong>신인 아이돌 그룹의 멤버</strong>입니다.<br>
+      우리 그룹의 노래가 얼마나 사랑받고 있는지, <strong>데이터와 그래프</strong>로 확인해보세요!<br>
+      Jupyter에서 코드를 직접 실행해보고, 아래 문제도 풀어보세요.
     </p>
 
-    <pre><code>import pandas as pd
+    <!-- Stage 1 -->
+    <div class="stage">
+      <h3>Stage 1. 일별 스트리밍 그래프 그리기</h3>
+      <p>
+        아래는 우리 그룹의 <strong>타이틀곡(TITLE)과 수록곡(B-SIDE)의 일별 스트리밍 수</strong>입니다.
+        이 데이터를 Jupyter에 복사해서 그래프를 직접 그려보세요.
+      </p>
 
-df = pd.DataFrame({
-    "조각": ["방1", "탈2", "출3", "성4", "공5"],
-    "힌트": ["문1", "문2", "문3", "문4", "문5"]
-})
+      <div class="code">
+import pandas as pd
+import matplotlib.pyplot as plt
 
-df.to_csv("stage1.csv", index=False)
+data = {
+    "day": ["월", "화", "수", "목", "금", "토", "일"] * 2,
+    "song": ["TITLE"] * 7 + ["B-SIDE"] * 7,
+    "streams": [100, 150, 180, 200, 300, 350, 400,
+                80, 90, 120, 130, 160, 170, 200]
+}
 
-df_loaded = pd.read_csv("stage1.csv")
-df_loaded</code></pre>
+df = pd.DataFrame(data)
+print(df.head())
+      </div>
 
+      <p><strong>미션 1-1.</strong> 타이틀곡만 골라서 일별 스트리밍 그래프를 그려보세요.</p>
+      <div class="code">
+# TODO: 'TITLE'만 골라서 df_title에 담아보세요.
+df_title = df[df["song"] == "TITLE"]
+
+plt.plot(df_title["day"], df_title["streams"])
+plt.title("우리 그룹 타이틀곡 일별 스트리밍")
+plt.xlabel("요일")
+plt.ylabel("스트리밍 수")
+plt.show()
+      </div>
+
+      <div class="question" data-type="mc" data-answer="2">
+        <p><strong>[Q1]</strong> 그래프를 사용하는 가장 큰 이유는 무엇일까요?</p>
+        <label><input type="radio" name="c1_q1" value="1"> 숫자를 숨기기 위해</label><br>
+        <label><input type="radio" name="c1_q1" value="2"> 변화를 한눈에 보기 위해</label><br>
+        <label><input type="radio" name="c1_q1" value="3"> 컴퓨터를 헷갈리게 하기 위해</label>
+      </div>
+    </div>
+
+    <!-- Stage 2 -->
+    <div class="stage">
+      <h3>Stage 2. 같은 데이터끼리 묶어보기 (groupby 개념)</h3>
+      <p>
+        이번에는 요일별로 스트리밍 수를 모아보고 싶습니다.  
+        즉, <strong>'같은 요일'끼리 데이터를 묶어서 합계</strong>를 내는 것입니다.
+      </p>
+
+      <div class="code">
+# 요일별 스트리밍 합계 구하기
+streams_by_day = df.groupby("day")["streams"].sum()
+print(streams_by_day)
+
+# 막대 그래프로 그리기
+streams_by_day.plot(kind="bar")
+plt.title("요일별 전체 스트리밍 합계")
+plt.xlabel("요일")
+plt.ylabel("스트리밍 수")
+plt.show()
+      </div>
+
+      <div class="question" data-type="mc" data-answer="1">
+        <p><strong>[Q2]</strong> 위 코드에서 <code>groupby("day")</code>가 하는 일과 가장 가까운 설명은?</p>
+        <label><input type="radio" name="c1_q2" value="1">
+          같은 요일끼리 데이터를 묶어서 합계를 구한다
+        </label><br>
+        <label><input type="radio" name="c1_q2" value="2">
+          데이터를 전부 삭제한다
+        </label><br>
+        <label><input type="radio" name="c1_q2" value="3">
+          요일 이름을 전부 영어로 바꾼다
+        </label>
+      </div>
+
+      <div class="question" data-type="short" data-answer="groupby">
+        <p><strong>[Q3]</strong>  
+          파이썬에서 "어떤 기준으로 데이터를 묶어서 계산"할 때 자주 쓰는 함수 이름은 무엇일까요?<br>
+          (힌트: <code>df.________("day")</code> 형태로 썼습니다.)
+        </p>
+        <input type="text" placeholder="소문자로 입력" />
+      </div>
+    </div>
+
+    <!-- Stage 3 -->
+    <div class="stage">
+      <h3>Stage 3. 자동 차트 생성 버튼 만들기 (함수 복습)</h3>
+      <p>
+        같은 코드를 계속 반복해서 쓰는 대신, <strong>함수(function)</strong>를 만들어  
+        <strong>버튼처럼 한 번에 실행</strong>할 수 있습니다.
+      </p>
+
+      <div class="code">
+def plot_song(df, song_name):
+    song_df = df[df["song"] == song_name]
+    plt.plot(song_df["day"], song_df["streams"])
+    plt.title(f"{song_name} 일별 스트리밍")
+    plt.xlabel("요일")
+    plt.ylabel("스트리밍 수")
+    plt.show()
+
+# 사용 예시
+plot_song(df, "TITLE")
+plot_song(df, "B-SIDE")
+      </div>
+
+      <div class="question" data-type="mc" data-answer="3">
+        <p><strong>[Q4]</strong> 위 코드에서 <code>plot_song</code>은 어떤 역할을 하나요?</p>
+        <label><input type="radio" name="c1_q4" value="1">
+          데이터를 삭제하는 함수
+        </label><br>
+        <label><input type="radio" name="c1_q4" value="2">
+          요일 이름을 바꾸는 함수
+        </label><br>
+        <label><input type="radio" name="c1_q4" value="3">
+          노래 이름을 넣으면 자동으로 그래프를 그려주는 함수
+        </label>
+      </div>
+
+      <div class="question" data-type="text">
+        <p><strong>[Q5]</strong>  
+          만약 너라면, 우리 그룹용 자동 차트 생성기에 어떤 이름을 붙이고 싶나요?<br>
+          예시: <code>idol_chart_auto()</code>, <code>my_group_report()</code> 등
+          (자유롭게 적어보세요. 자동 채점은 하지 않습니다 😊)
+        </p>
+        <textarea rows="2" style="width: 100%;" placeholder="함수 이름을 상상해서 적어보세요"></textarea>
+      </div>
+    </div>
+
+    <button onclick="checkChapter('chapter1')">챕터 1 점수 확인하기</button>
+    <div class="result" id="chapter1_result"></div>
+  </div>
+
+  <!-- ===================== 챕터 2: 방탈출 퍼즐 ===================== -->
+  <div class="chapter" id="chapter2">
+    <h2>📘 챕터 2. 데이터 퍼즐 방탈출 연구소</h2>
     <p>
-      👉 이 파일은 나중에 <strong>Stage 5</strong>에서<br>
-      <code>"방탈출성공"</code> 이라는 단어를 만드는 단서로 사용됩니다.
-    </p>
-  </section>
-
-  <!-- Stage 2 -->
-  <section class="stage">
-    <h2>🔍 Stage 2 — 정규식 문제</h2>
-    <p>
-      아래 문장에서 <strong>정규식을 사용해 숫자 2025를 찾아내는 코드</strong>를 작성하세요.
+      이번에는 <strong>정규식, 배열/NumPy, 인덱싱, 슬라이싱</strong>을 복습하는 챕터입니다.<br>
+      너는 비밀 연구소에 초대된 연구원이며, 각 퍼즐을 풀어 <strong>방을 탈출</strong>해야 합니다.
     </p>
 
-    <pre><code>import re
-text = "탈출코드는 2025년에 공개된다!"</code></pre>
+    <!-- Stage 1: 정규식 -->
+    <div class="stage">
+      <h3>Stage 1. 정규식으로 숨겨진 전화번호 찾기</h3>
+      <p>아래 코드를 Jupyter에서 실행해보고, 정규식이 무엇을 하는지 확인해보세요.</p>
 
-    <textarea id="s2-code" placeholder="여기에 파이썬 코드를 작성하세요"></textarea>
+      <div class="code">
+import re
 
-    <div>
-      <button class="check-btn" onclick="checkStage2()">정답 확인</button>
-      <button class="hint-btn" id="s2-hint-btn">힌트 보기</button>
+text = "문의: 010-1234-5678 / 비상연락망: 010-9999-8888"
+
+phones = re.findall(r"\d{3}-\d{4}-\d{4}", text)
+print(phones)
+      </div>
+
+      <div class="question" data-type="mc" data-answer="2">
+        <p><strong>[Q6]</strong> 위 정규식 <code>\d{3}-\d{4}-\d{4}</code>는 어떤 패턴을 찾는 걸까요?</p>
+        <label><input type="radio" name="c2_q6" value="1">
+          숫자 3개만 찾는다
+        </label><br>
+        <label><input type="radio" name="c2_q6" value="2">
+          000-0000-0000 형태의 전화번호를 찾는다
+        </label><br>
+        <label><input type="radio" name="c2_q6" value="3">
+          영어 알파벳만 찾는다
+        </label>
+      </div>
     </div>
 
-    <div id="s2-hint" class="hint-output"></div>
-    <div id="s2-feedback" class="feedback"></div>
-  </section>
+    <!-- Stage 2: 배열/인덱싱 -->
+    <div class="stage">
+      <h3>Stage 2. 배열의 중앙 값을 찾아라 (NumPy + 인덱싱)</h3>
+      <p>아래 배열에서 중앙에 있는 값을 인덱싱으로 꺼내보세요.</p>
 
-  <!-- Stage 3 -->
-  <section class="stage">
-    <h2>🧮 Stage 3 — 배열 조각 퍼즐</h2>
-    <p>배열 <code>[2, 4, 6]</code>의 값을 모두 곱하는 코드를 작성하세요.</p>
+      <div class="code">
+import numpy as np
 
-    <pre><code>import numpy as np
-arr = np.array([2, 4, 6])</code></pre>
+arr = np.array([[1,2,3],
+                [4,5,6],
+                [7,8,9]])
 
-    <textarea id="s3-code" placeholder="여기에 파이썬 코드를 작성하세요"></textarea>
+# TODO: 중앙 값(5)을 인덱싱으로 꺼내서 answer에 넣어보세요.
+answer = arr[1, 1]
+print(answer)
+      </div>
 
-    <div>
-      <button class="check-btn" onclick="checkStage3()">정답 확인</button>
-      <button class="hint-btn" id="s3-hint-btn">힌트 보기</button>
+      <div class="question" data-type="mc" data-answer="3">
+        <p><strong>[Q7]</strong> 중앙 값 5를 가져오기 위한 올바른 인덱싱은?</p>
+        <label><input type="radio" name="c2_q7" value="1"> <code>arr[0, 0]</code></label><br>
+        <label><input type="radio" name="c2_q7" value="2"> <code>arr[2, 2]</code></label><br>
+        <label><input type="radio" name="c2_q7" value="3"> <code>arr[1, 1]</code></label>
+      </div>
     </div>
 
-    <div id="s3-hint" class="hint-output"></div>
-    <div id="s3-feedback" class="feedback"></div>
-  </section>
+    <!-- Stage 3: 슬라이싱 -->
+    <div class="stage">
+      <h3>Stage 3. 슬라이싱으로 ESCAPE 만들기</h3>
+      <p>
+        아래 문자열 <code>secret</code>에서 슬라이싱을 사용해 <strong>"ESCAPE"</strong>를 뽑아내는 코드를 만들어보세요.
+      </p>
 
-  <!-- Stage 4 -->
-  <section class="stage">
-    <h2>✂ Stage 4 — 인덱싱 · 슬라이싱</h2>
+      <div class="code">
+secret = "DATA_ESCAPE_ROOM"
 
-    <h3>4-1. 인덱싱</h3>
-    <p>문자열 <code>word = "HELLO"</code>에서 <strong>두 번째 글자</strong>를 꺼내는 코드를 작성하세요.</p>
+# TODO: 슬라이싱으로 "ESCAPE"만 잘라서 answer에 넣어보세요.
+answer = secret[5:11]
+print(answer)  # ESCAPE
+      </div>
 
-    <textarea id="s4a-code" placeholder="예: word[1]"></textarea>
-
-    <div>
-      <button class="check-btn" onclick="checkStage4a()">정답 확인</button>
-      <button class="hint-btn" id="s4a-hint-btn">힌트 보기</button>
+      <div class="question" data-type="short" data-answer="secret[5:11]">
+        <p><strong>[Q8]</strong>  
+          위 코드에서 <strong>"ESCAPE"</strong>만 가져오기 위한 슬라이싱 표현을 정확히 적어보세요.<br>
+          예시 형식: <code>secret[0:4]</code>
+        </p>
+        <input type="text" placeholder="예: secret[5:11]" />
+      </div>
     </div>
 
-    <div id="s4a-hint" class="hint-output"></div>
-    <div id="s4a-feedback" class="feedback"></div>
+    <button onclick="checkChapter('chapter2')">챕터 2 점수 확인하기</button>
+    <div class="result" id="chapter2_result"></div>
+  </div>
 
-    <h3 style="margin-top:1rem;">4-2. 슬라이싱</h3>
-    <p><code>text = "ESCAPEROOM"</code>에서 <strong>"ROOM"</strong>을 꺼내는 코드를 작성하세요.</p>
+  <script>
+    function checkChapter(chapterId) {
+      const chapter = document.getElementById(chapterId);
+      const questions = chapter.querySelectorAll('.question');
+      let total = 0;
+      let correct = 0;
 
-    <textarea id="s4b-code" placeholder="예: text[5:9]"></textarea>
+      questions.forEach(q => {
+        const type = q.getAttribute('data-type');
+        const answer = q.getAttribute('data-answer');
+        if (!answer) return; // 서술형 등 채점 안 하는 경우
 
-    <div>
-      <button class="check-btn" onclick="checkStage4b()">정답 확인</button>
-      <button class="hint-btn" id="s4b-hint-btn">힌트 보기</button>
-    </div>
+        total += 1;
 
-    <div id="s4b-hint" class="hint-output"></div>
-    <div id="s4b-feedback" class="feedback"></div>
-  </section>
+        if (type === 'mc') {
+          const checked = q.querySelector('input[type="radio"]:checked');
+          if (checked && checked.value === answer) {
+            correct += 1;
+          }
+        } else if (type === 'short') {
+          const input = q.querySelector('input[type="text"]');
+          if (!input) return;
+          const user = (input.value || "").trim();
+          if (user === answer) {
+            correct += 1;
+          }
+        }
+        // data-type="text" 는 채점하지 않음
+      });
 
-  <!-- Stage 5 -->
-  <section class="stage">
-    <h2>🧪 Stage 5 — '방탈출성공' 만들기</h2>
-    <p>
-      글자와 숫자가 섞인 데이터(<code>"방1", "탈2"</code> 등)에서
-      <strong>숫자를 제거하고 글자만 남기는 코드</strong>를 작성한 뒤,<br>
-      이어붙여 어떤 단어가 되는지 확인하는 코드를 작성하세요.
-    </p>
-
-    <textarea id="s5-code" placeholder="힌트: str.replace() 와 정규식 사용"></textarea>
-
-    <div>
-      <button class="check-btn" onclick="checkStage5()">정답 확인</button>
-      <button class="hint-btn" id="s5-hint-btn">힌트 보기</button>
-    </div>
-
-    <div id="s5-hint" class="hint-output"></div>
-    <div id="s5-feedback" class="feedback"></div>
-  </section>
-
-</main>
-
-<script>
-/* ------------------------
-   힌트 버튼 제어
--------------------------*/
-function setupHintButton(btnId, outputId, hintText, answerText) {
-  const btn = document.getElementById(btnId);
-  const out = document.getElementById(outputId);
-  btn.dataset.clicks = "0";
-
-  btn.addEventListener("click", () => {
-    let c = Number(btn.dataset.clicks) + 1;
-    btn.dataset.clicks = c;
-    out.textContent = "";
-
-    if (c === 1) {
-      btn.classList.add("hint-level1");
-      out.textContent = "💡 힌트: " + hintText;
-    } else {
-      btn.classList.remove("hint-level1");
-      btn.classList.add("hint-level2");
-      out.textContent = "✅ 정답 코드:\n\n" + answerText;
+      const resultEl = document.getElementById(chapterId + "_result");
+      if (total === 0) {
+        resultEl.textContent = "채점할 문제가 없습니다.";
+      } else {
+        resultEl.textContent = `정답: ${correct} / ${total} 문제`;
+      }
     }
-  });
-}
-
-/* ------------------------
-   Stage 2 채점
--------------------------*/
-function checkStage2() {
-  const code = document.getElementById("s2-code").value;
-  const fb = document.getElementById("s2-feedback");
-  fb.classList.remove("ok", "no");
-
-  if (code.includes("re.search") && code.includes("2025")) {
-    fb.textContent = "🎉 정답입니다!";
-    fb.classList.add("ok");
-  } else {
-    fb.textContent = "아쉬워요! 힌트를 눌러보세요.";
-    fb.classList.add("no");
-  }
-}
-
-/* ------------------------
-   Stage 3: np.prod(arr)
--------------------------*/
-function checkStage3() {
-  const code = document.getElementById("s3-code").value;
-  const fb = document.getElementById("s3-feedback");
-  fb.classList.remove("ok", "no");
-
-  if (code.includes("np.prod") && code.includes("arr")) {
-    fb.textContent = "🎉 정답! 배열 [2,4,6]의 곱을 구하는 올바른 코드입니다.";
-    fb.classList.add("ok");
-  } else {
-    fb.textContent = "조금 더 생각해 보세요! 배열 전체를 곱하는 함수를 떠올려보세요.";
-    fb.classList.add("no");
-  }
-}
-
-/* ------------------------
-   Stage 4-1: word[1]
--------------------------*/
-function checkStage4a() {
-  const code = document.getElementById("s4a-code").value.trim();
-  const fb = document.getElementById("s4a-feedback");
-  fb.classList.remove("ok", "no");
-
-  if (code.replace(/\s/g, "") === "word[1]") {
-    fb.textContent = "🎉 정답! 두 번째 글자는 word[1]로 꺼낼 수 있어요.";
-    fb.classList.add("ok");
-  } else {
-    fb.textContent = "인덱싱은 0부터 시작해요! H=0, E=1입니다.";
-    fb.classList.add("no");
-  }
-}
-
-/* ------------------------
-   Stage 4-2: text[5:9]
--------------------------*/
-function checkStage4b() {
-  const code = document.getElementById("s4b-code").value.replace(/\s/g, "");
-  const fb = document.getElementById("s4b-feedback");
-  fb.classList.remove("ok", "no");
-
-  if (code === "text[5:9]") {
-    fb.textContent = "🎉 정답! text[5:9]의 결과는 ROOM입니다.";
-    fb.classList.add("ok");
-  } else {
-    fb.textContent = "슬라이싱 범위를 다시 확인해 보세요! R의 위치는 5입니다.";
-    fb.classList.add("no");
-  }
-}
-
-/* ------------------------
-   Stage 5: str.replace + \d+ + .join
--------------------------*/
-function checkStage5() {
-  const code = document.getElementById("s5-code").value;
-  const fb = document.getElementById("s5-feedback");
-  fb.classList.remove("ok", "no");
-
-  // 간단한 문자열 검사: 숫자 제거 + join 사용 여부
-  if (
-    code.includes("str.replace") &&
-    code.includes("\\d+") &&
-    code.includes(".join")
-  ) {
-    fb.textContent = "🎉 정답! '방탈출성공'을 만드는 코드입니다!";
-    fb.classList.add("ok");
-  } else {
-    fb.textContent = "숫자를 지우고(.replace), 글자만 모아서(.join) 이어붙이는 과정을 떠올려보세요!";
-    fb.classList.add("no");
-  }
-}
-
-/* ------------------------
-   힌트 버튼 등록
--------------------------*/
-document.addEventListener("DOMContentLoaded", () => {
-  setupHintButton(
-    "s2-hint-btn",
-    "s2-hint",
-    "re.search 또는 re.findall을 사용할 수 있어요.",
-    'import re\ntext = "탈출코드는 2025년에 공개된다!"\nre.search(r"2025", text)'
-  );
-
-  setupHintButton(
-    "s3-hint-btn",
-    "s3-hint",
-    "np.prod(arr)를 사용해 보세요!",
-    'import numpy as np\narr = np.array([2,4,6])\nnp.prod(arr)'
-  );
-
-  setupHintButton(
-    "s4a-hint-btn",
-    "s4a-hint",
-    "파이썬은 0부터 시작해요! H=0, E=1입니다.",
-    'word = "HELLO"\nword[1]'
-  );
-
-  setupHintButton(
-    "s4b-hint-btn",
-    "s4b-hint",
-    "슬라이싱은 text[시작:끝] 형태예요. R의 인덱스를 잘 세어보세요.",
-    'text = "ESCAPEROOM"\ntext[5:9]'
-  );
-
-  setupHintButton(
-    "s5-hint-btn",
-    "s5-hint",
-    "df['조각'].str.replace(r\"\\d+\", \"\", regex=True) 로 숫자를 없앤 뒤, \"\".join(...) 으로 이어붙일 수 있어요.",
-    'df["글자만"] = df["조각"].str.replace(r"\\d+", "", regex=True)\n"".join(df["글자만"])'
-  );
-});
-</script>
-
+  </script>
 </body>
 </html>

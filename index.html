@@ -94,10 +94,9 @@
     <p>
       너는 이제 <strong>신인 아이돌 그룹의 멤버</strong>입니다.<br>
       우리 그룹의 노래가 얼마나 사랑받고 있는지, <strong>데이터와 그래프</strong>로 확인해보세요!<br>
-      Jupyter에서 코드를 직접 실행해보고, 아래 문제도 풀어보세요.
     </p>
 
-    <!-- 공통 데이터 코드 (유지) -->
+    <!-- 공통 데이터 코드 (설명용) -->
     <div class="code">
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -117,25 +116,47 @@ print(df.head())
     <div class="stage">
       <h3>Stage 1. 일별 스트리밍 그래프 그리기</h3>
 
-      <!-- 1-1 그래프 그리기(설명만, 채점X) -->
-      <div class="question" data-type="text">
+      <!-- 1-1: 정답 맞히면 그래프 표시 -->
+      <div class="question" id="q1_1"
+           data-type="short"
+           data-answer="day"
+           data-hint1="그래프의 x축에는 '요일' 정보가 들어가요."
+           data-hint2="코드에서 x축으로 사용하는 열 이름은 day 입니다.">
         <p><strong>[1-1]</strong>  
-          위 데이터를 활용해서, 타이틀곡 <strong>"TITLE"</strong>의 일별 스트리밍 그래프를 Jupyter에서 직접 그려보세요.
-          (이 문제는 자유 활동 문제라 자동 채점하지 않습니다.)
+          TITLE 곡의 일별 스트리밍 그래프를 그릴 때,  
+          <strong>x축에 사용할 열 이름</strong>은 무엇인가요? (코드에 쓰인 영문 이름을 적어보세요.)
+          <br><small>정답을 적고 아래에서 챕터 1 점수를 확인하면, 그래프가 나타납니다.</small>
         </p>
-        <textarea rows="2" placeholder="그래프를 그리면서 느낀 점이나 궁금한 점을 적어보세요."></textarea>
+        <input type="text" />
+
+        <div class="hint-buttons">
+          <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
+          <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
+          <button type="button" class="answer-btn">정답 보기</button>
+        </div>
+        <div class="hint-box"></div>
+        <div class="answer-box"></div>
       </div>
 
-      <!-- 1-2 조건 필터링 문제: 힌트1=설명+함수, 힌트2=코드 -->
+      <!-- 그래프 영역 (정답 맞으면 표시) -->
+      <div id="graph1_box" style="display:none; margin-top:12px;">
+        <canvas id="graph1_canvas" width="500" height="250"></canvas>
+      </div>
+    </div>
+
+    <!-- Stage 1-2: TITLE 필터링 -->
+    <div class="stage">
+      <h3>Stage 1-2. TITLE 곡만 선택하기</h3>
       <div class="question"
            data-type="short"
-           data-answer="df[df['song']=='TITLE']|df[df[\"song\"]==\"TITLE\"]|df[df['song'] == 'TITLE']|df[df[\"song\"] == \"TITLE\"]|df_title=df[df['song']=='TITLE']|df_title=df[df[\"song\"]==\"TITLE\"]|df_title = df[df['song']== 'TITLE']|df_title = df[df[\"song\"]==\"TITLE\"]"
-           data-hint1="df에서 'song' 열이 'TITLE'인 행만 골라서 사용합니다. 예: df[ df['song'] == 'TITLE' ] 형태예요."
-           data-hint2="예시 코드:  df_title = df[df['song'] == 'TITLE']">
+           data-answer="df[df['song']=='TITLE']|df[df[\"song\"]==\"TITLE\"]|df[df['song'] == 'TITLE']|df[df[\"song\"] == \"TITLE\"]|df_title=df[df['song']=='TITLE']|df_title=df[df[\"song\"]==\"TITLE\"]|df_title = df[df['song']=='TITLE']|df_title = df[df[\"song\"]==\"TITLE\"]"
+           data-hint1="df에서 song 열이 'TITLE'인 행만 골라서 사용합니다. 예: df[ df['song'] == 'TITLE' ]"
+           data-hint2="예시 코드:
+df_title = df[df['song'] == 'TITLE']">
         <p><strong>[1-2]</strong>  
-          <strong>TITLE</strong> 곡만 선택해서 새로운 데이터프레임 <code>df_title</code>에 담는 코드를 한 줄로 적어보세요.
+          TITLE 곡만 선택해서 새로운 데이터프레임 <code>df_title</code>에 담는 코드를 적어보세요.
         </p>
-        <input type="text" placeholder="예: df_title = df[df['song'] == 'TITLE']" />
+        <input type="text" />
 
         <div class="hint-buttons">
           <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
@@ -151,16 +172,17 @@ print(df.head())
     <div class="stage">
       <h3>Stage 2. 같은 데이터끼리 묶어보기 (요일별 합계 & 막대그래프)</h3>
 
-      <!-- 2-1 요일별 스트리밍 합계 구하기 -->
+      <!-- 2-1 요일별 합계 -->
       <div class="question"
            data-type="short"
            data-answer="df.groupby('day')['streams'].sum()|df.groupby(\"day\")[\"streams\"].sum()|streams_by_day=df.groupby('day')['streams'].sum()|streams_by_day=df.groupby(\"day\")[\"streams\"].sum()|streams_by_day = df.groupby('day')['streams'].sum()|streams_by_day = df.groupby(\"day\")[\"streams\"].sum()"
            data-hint1="groupby 함수를 사용해 'day' 기준으로 묶고, 'streams' 열에 sum()을 적용합니다."
-           data-hint2="예시 코드:  streams_by_day = df.groupby('day')['streams'].sum()">
+           data-hint2="예시 코드:
+streams_by_day = df.groupby('day')['streams'].sum()">
         <p><strong>[2-1]</strong>  
-          요일(<code>day</code>)별 스트리밍 합계를 구하는 코드를 한 줄로 적어보세요.
+          요일(<code>day</code>)별 스트리밍 합계를 구하는 코드를 적어보세요.
         </p>
-        <input type="text" placeholder="예: streams_by_day = df.groupby('day')['streams'].sum()" />
+        <input type="text" />
 
         <div class="hint-buttons">
           <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
@@ -171,16 +193,17 @@ print(df.head())
         <div class="answer-box"></div>
       </div>
 
-      <!-- 2-2 막대 그래프로 그리기 -->
+      <!-- 2-2 막대 그래프 -->
       <div class="question"
            data-type="short"
            data-answer="streams_by_day.plot(kind='bar')|streams_by_day.plot(kind=\"bar\")"
            data-hint1="pandas의 plot 함수에 kind='bar'를 주면 막대그래프를 그릴 수 있어요."
-           data-hint2="예시 코드:  streams_by_day.plot(kind='bar')">
+           data-hint2="예시 코드:
+streams_by_day.plot(kind='bar')">
         <p><strong>[2-2]</strong>  
-          <code>streams_by_day</code> 데이터를 이용해 <strong>막대 그래프</strong>를 그리는 코드를 한 줄로 적어보세요.
+          <code>streams_by_day</code> 데이터를 이용해 <strong>막대 그래프</strong>를 그리는 코드를 적어보세요.
         </p>
-        <input type="text" placeholder="예: streams_by_day.plot(kind='bar')" />
+        <input type="text" />
 
         <div class="hint-buttons">
           <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
@@ -196,9 +219,9 @@ print(df.head())
     <div class="stage">
       <h3>Stage 3. 자동 차트 생성 버튼 만들기 (함수 만들기)</h3>
 
-      <!-- 3-1 함수 만들어 시각화하기 (설명+힌트 위주, 채점X) -->
       <div class="question"
            data-type="text"
+           data-answer="def plot_song(df, song_name):"
            data-hint1="함수 안에서 song_name으로 행을 필터링하고, plt.plot으로 day와 streams를 그립니다."
            data-hint2="예시 코드:
 def plot_song(df, song_name):
@@ -209,14 +232,14 @@ def plot_song(df, song_name):
     plt.ylabel('스트리밍 수')
     plt.show()">
         <p><strong>[3-1]</strong>  
-          노래 이름(<code>song_name</code>)을 넣으면 자동으로 그 노래의 일별 스트리밍 그래프를 그려주는 함수를 만들어 보세요.  
-          (이 문제는 자유 코딩 문제라 자동 채점하지 않습니다.)
+          노래 이름(<code>song_name</code>)을 넣으면 자동으로 그 노래의 일별 스트리밍 그래프를 그려주는 함수를 만들어 보세요.
         </p>
-        <textarea rows="4" placeholder="def plot_song(df, song_name): ... 형태로 함수를 직접 써보세요."></textarea>
+        <textarea rows="4"></textarea>
 
         <div class="hint-buttons">
           <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
           <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
+          <button type="button" class="answer-btn">정답 보기</button>
         </div>
         <div class="hint-box"></div>
         <div class="answer-box"></div>
@@ -227,7 +250,7 @@ def plot_song(df, song_name):
     <div class="result" id="chapter1_result"></div>
   </div>
 
-  <!-- ===================== 챕터 2: 방탈출 연구소 (이전 버전 그대로) ===================== -->
+  <!-- ===================== 챕터 2: 방탈출 연구소 ===================== -->
   <div class="chapter" id="chapter2">
     <h2>📘 챕터 2. 데이터 퍼즐 방탈출 연구소</h2>
 
@@ -267,7 +290,7 @@ def plot_song(df, song_name):
         <p><strong>[Q7]</strong>  
           중앙 값 5를 가져오기 위한 인덱싱 코드를 적어보세요.
         </p>
-        <input type="text" placeholder="예: arr[1,1]" />
+        <input type="text" />
 
         <div class="hint-buttons">
           <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
@@ -291,7 +314,7 @@ def plot_song(df, song_name):
         <p><strong>[Q8]</strong>  
           <strong>ESCAPE</strong>만 가져오기 위한 슬라이싱 코드를 적어보세요.
         </p>
-        <input type="text" placeholder="예: secret[5:11]" />
+        <input type="text" />
 
         <div class="hint-buttons">
           <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
@@ -309,6 +332,73 @@ def plot_song(df, song_name):
 
   <!-- ===================== SCRIPT ===================== -->
   <script>
+    // 간단한 그래프 그리기 (Stage 1-1 정답일 때)
+    function drawGraph1() {
+      const canvas = document.getElementById("graph1_canvas");
+      if (!canvas) return;
+      const ctx = canvas.getContext("2d");
+      const days = ["월","화","수","목","금","토","일"];
+      const streams = [100,150,180,200,300,350,400];
+
+      // 캔버스 초기화
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const marginLeft = 40;
+      const marginBottom = 30;
+      const width = canvas.width;
+      const height = canvas.height;
+      const graphWidth = width - marginLeft - 10;
+      const graphHeight = height - marginBottom - 20;
+
+      // 축 그리기
+      ctx.strokeStyle = "#333";
+      ctx.beginPath();
+      ctx.moveTo(marginLeft, 10);
+      ctx.lineTo(marginLeft, 10 + graphHeight);
+      ctx.lineTo(marginLeft + graphWidth, 10 + graphHeight);
+      ctx.stroke();
+
+      // 데이터 라인 그리기
+      const maxVal = Math.max(...streams);
+      const stepX = graphWidth / (days.length - 1);
+
+      ctx.strokeStyle = "#1976d2";
+      ctx.fillStyle = "#1976d2";
+      ctx.beginPath();
+      streams.forEach((v, i) => {
+        const x = marginLeft + stepX * i;
+        const y = 10 + graphHeight - (v / maxVal) * graphHeight;
+        if (i === 0) {
+          ctx.moveTo(x, y);
+        } else {
+          ctx.lineTo(x, y);
+        }
+      });
+      ctx.stroke();
+
+      // 점 찍기
+      streams.forEach((v, i) => {
+        const x = marginLeft + stepX * i;
+        const y = 10 + graphHeight - (v / maxVal) * graphHeight;
+        ctx.beginPath();
+        ctx.arc(x, y, 3, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      // x축 라벨
+      ctx.fillStyle = "#000";
+      ctx.font = "12px sans-serif";
+      days.forEach((d, i) => {
+        const x = marginLeft + stepX * i;
+        const y = 10 + graphHeight + 15;
+        ctx.fillText(d, x - 8, y);
+      });
+
+      // 제목
+      ctx.font = "14px sans-serif";
+      ctx.fillText("TITLE 일별 스트리밍 (예시 그래프)", marginLeft, 20);
+    }
+
     // 힌트 및 정답 보기 버튼 기능
     document.addEventListener("DOMContentLoaded", function () {
       const questions = document.querySelectorAll(".question");
@@ -322,6 +412,14 @@ def plot_song(df, song_name):
         hintButtons.forEach(btn => {
           btn.addEventListener("click", function () {
             const idx = btn.getAttribute("data-hint");
+            // 힌트 2는 힌트 1 사용 후에만
+            if (idx === "2") {
+              const firstHintBtn = q.querySelector('.hint-btn[data-hint="1"]');
+              if (!firstHintBtn || !firstHintBtn.classList.contains("used")) {
+                hintBox.textContent = "먼저 힌트 1을 확인해 보세요.";
+                return;
+              }
+            }
             const hintText = q.getAttribute("data-hint" + idx);
             hintBox.textContent = hintText || "";
             btn.classList.add("used");
@@ -348,6 +446,7 @@ def plot_song(df, song_name):
       const questions = chapter.querySelectorAll('.question');
       let total = 0;
       let correct = 0;
+      let showGraph1 = false;
 
       questions.forEach(q => {
         const type = q.getAttribute('data-type');
@@ -364,8 +463,25 @@ def plot_song(df, song_name):
         total += 1;
         if (answers.includes(user)) {
           correct += 1;
+          // 스테이지 1-1 정답이면 그래프 표시 플래그
+          if (q.id === "q1_1" && chapterId === "chapter1") {
+            showGraph1 = true;
+          }
         }
       });
+
+      // 그래프 표시 처리 (챕터 1 전용)
+      if (chapterId === "chapter1") {
+        const box = document.getElementById("graph1_box");
+        if (box) {
+          if (showGraph1) {
+            box.style.display = "block";
+            drawGraph1();
+          } else {
+            box.style.display = "none";
+          }
+        }
+      }
 
       const resultEl = document.getElementById(chapterId + "_result");
       resultEl.textContent = `정답: ${correct} / ${total} 문제`;

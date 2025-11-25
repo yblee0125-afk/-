@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>파이썬 복습 게임 - 아이돌 & 방탈출</title>
+  <title>파이썬 방탈출 게임 - 아이돌 & 방탈출</title>
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -28,59 +28,7 @@
     .code {
       background: #f5f5f5;
       padding: 8px 10px;
-      border-radius: 4px;
-      font-family: "Fira Code", Consolas, monospace;
-      white-space: pre-wrap;
-      font-size: 14px;
-    }
-    .question {
-      margin: 8px 0;
-      padding: 8px 10px;
-      background: #fafafa;
-      border-radius: 6px;
-      border: 1px solid #eee;
-    }
-    .question input[type="text"],
-    .question textarea {
-      width: 100%;
-      box-sizing: border-box;
-      padding: 6px 8px;
-      margin-top: 4px;
-      font-size: 14px;
-    }
-    .result {
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    button {
-      margin-top: 8px;
-      padding: 6px 10px;
-      cursor: pointer;
-    }
-    .hint-buttons {
-      margin-top: 6px;
-    }
-    .hint-btn, .answer-btn {
-      font-size: 12px;
-      padding: 4px 8px;
-      margin-right: 4px;
-      background: #e0e0e0;
-      border: 1px solid #bdbdbd;
-      border-radius: 4px;
-    }
-    .hint-btn.used, .answer-btn.used {
-      background: #ffd54f;
-      border-color: #ffb300;
-    }
-    .hint-box, .answer-box {
-      margin-top: 4px;
-      font-size: 13px;
-      color: #555;
-    }
-  </style>
-</head>
-<body>
-  <h1>파이썬 복습 게임 🎮</h1>
+      borde방탈출 게임 🎮</h1>
   <p>
     수업이 끝난 뒤, 이 페이지를 보면서 <strong>파이썬(Jupyter) 수업 내용을 복습</strong>해 보세요.<br>
     각 챕터는 원하는 만큼 다시 실행하면서 즐겨도 됩니다.
@@ -123,20 +71,20 @@ print(df.head())
            data-hint1="그래프의 x축에는 '요일' 정보가 들어가요."
            data-hint2="코드에서 x축으로 사용하는 열 이름은 day 입니다.">
         <p><strong>[1-1]</strong>  
-          TITLE 곡의 일별 스트리밍 그래프를 그릴 때,  
-          <strong>x축에 사용할 열 이름</strong>은 무엇인가요? (코드에 쓰인 영문 이름을 적어보세요.)
-          <br><small>정답을 적고 아래에서 챕터 1 점수를 확인하면, 그래프가 나타납니다.</small>
+          <strong>코드를 따라 데이터 입력하기</strong><br>
+          TITLE 곡의 일별 스트리밍 그래프를 그릴 때,<br>
+          <strong>x축에 사용할 열 이름(영문)</strong>을 적어보세요.
         </p>
         <input type="text" />
 
-        <div class="hint-buttons">
-          <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
-          <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
-          <button type="button" class="answer-btn">정답 보기</button>
-        </div>
-        <div class="hint-box"></div>
-        <div class="answer-box"></div>
+      <div class="hint-buttons">
+        <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
+        <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
+        <button type="button" class="answer-btn">정답 보기</button>
       </div>
+      <div class="hint-box"></div>
+      <div class="answer-box"></div>
+    </div>
 
       <!-- 그래프 영역 (정답 맞으면 표시) -->
       <div id="graph1_box" style="display:none; margin-top:12px;">
@@ -246,7 +194,7 @@ def plot_song(df, song_name):
       </div>
     </div>
 
-    <button onclick="checkChapter('chapter1')">챕터 1 점수 확인하기</button>
+    <!-- 챕터 1 점수 버튼은 삭제됨 -->
     <div class="result" id="chapter1_result"></div>
   </div>
 
@@ -340,7 +288,6 @@ def plot_song(df, song_name):
       const days = ["월","화","수","목","금","토","일"];
       const streams = [100,150,180,200,300,350,400];
 
-      // 캔버스 초기화
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       const marginLeft = 40;
@@ -350,7 +297,7 @@ def plot_song(df, song_name):
       const graphWidth = width - marginLeft - 10;
       const graphHeight = height - marginBottom - 20;
 
-      // 축 그리기
+      // 축
       ctx.strokeStyle = "#333";
       ctx.beginPath();
       ctx.moveTo(marginLeft, 10);
@@ -358,25 +305,22 @@ def plot_song(df, song_name):
       ctx.lineTo(marginLeft + graphWidth, 10 + graphHeight);
       ctx.stroke();
 
-      // 데이터 라인 그리기
       const maxVal = Math.max(...streams);
       const stepX = graphWidth / (days.length - 1);
 
+      // 라인
       ctx.strokeStyle = "#1976d2";
       ctx.fillStyle = "#1976d2";
       ctx.beginPath();
       streams.forEach((v, i) => {
         const x = marginLeft + stepX * i;
         const y = 10 + graphHeight - (v / maxVal) * graphHeight;
-        if (i === 0) {
-          ctx.moveTo(x, y);
-        } else {
-          ctx.lineTo(x, y);
-        }
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
       });
       ctx.stroke();
 
-      // 점 찍기
+      // 점
       streams.forEach((v, i) => {
         const x = marginLeft + stepX * i;
         const y = 10 + graphHeight - (v / maxVal) * graphHeight;
@@ -399,7 +343,7 @@ def plot_song(df, song_name):
       ctx.fillText("TITLE 일별 스트리밍 (예시 그래프)", marginLeft, 20);
     }
 
-    // 힌트 및 정답 보기 버튼 기능
+    // 힌트 및 정답 보기 버튼 기능 + 1-1 자동 그래프
     document.addEventListener("DOMContentLoaded", function () {
       const questions = document.querySelectorAll(".question");
 
@@ -416,12 +360,12 @@ def plot_song(df, song_name):
             if (idx === "2") {
               const firstHintBtn = q.querySelector('.hint-btn[data-hint="1"]');
               if (!firstHintBtn || !firstHintBtn.classList.contains("used")) {
-                hintBox.textContent = "먼저 힌트 1을 확인해 보세요.";
+                if (hintBox) hintBox.textContent = "먼저 힌트 1을 확인해 보세요.";
                 return;
               }
             }
             const hintText = q.getAttribute("data-hint" + idx);
-            hintBox.textContent = hintText || "";
+            if (hintBox) hintBox.textContent = hintText || "";
             btn.classList.add("used");
           });
         });
@@ -433,55 +377,60 @@ def plot_song(df, song_name):
             const ansAttr = q.getAttribute("data-answer");
             if (!ansAttr) return;
             const firstAnswer = ansAttr.split("|")[0];
-            answerBox.textContent = "정답: " + firstAnswer;
+            if (answerBox) answerBox.textContent = "정답: " + firstAnswer;
             answerBtn.classList.add("used");
           });
         }
       });
+
+      // Stage 1-1: 입력 중에 자동으로 그래프 표시
+      const q11 = document.getElementById("q1_1");
+      if (q11) {
+        const input = q11.querySelector('input[type="text"]');
+        const ansAttr = q11.getAttribute("data-answer");
+        if (input && ansAttr) {
+          const answers = ansAttr
+            .split("|")
+            .map(a => a.trim().replace(/\s+/g, "").toLowerCase());
+          input.addEventListener("input", function () {
+            const user = (input.value || "").trim().replace(/\s+/g, "").toLowerCase();
+            const box = document.getElementById("graph1_box");
+            if (!box) return;
+            if (answers.includes(user)) {
+              box.style.display = "block";
+              drawGraph1();
+            } else {
+              box.style.display = "none";
+            }
+          });
+        }
+      }
     });
 
-    // 챕터 채점 기능 (data-type="short"인 문제만 채점)
+    // 챕터 채점 기능 (chapter2용)
     function checkChapter(chapterId) {
       const chapter = document.getElementById(chapterId);
       const questions = chapter.querySelectorAll('.question');
       let total = 0;
       let correct = 0;
-      let showGraph1 = false;
 
       questions.forEach(q => {
         const type = q.getAttribute('data-type');
         const answerAttr = q.getAttribute('data-answer');
         if (!answerAttr || type !== 'short') return;
 
-        const answers = answerAttr.split("|").map(a => a.trim().replace(/\s+/g, ""));
+        const answers = answerAttr.split("|").map(a => a.trim().replace(/\s+/g, "").toLowerCase());
         const input = q.querySelector('input[type="text"], textarea');
         if (!input) return;
 
         const userRaw = (input.value || "").trim();
-        const user = userRaw.replace(/\s+/g, "");
+        const user = userRaw.replace(/\s+/g, "").toLowerCase();
 
         total += 1;
         if (answers.includes(user)) {
           correct += 1;
-          // 스테이지 1-1 정답이면 그래프 표시 플래그
-          if (q.id === "q1_1" && chapterId === "chapter1") {
-            showGraph1 = true;
-          }
         }
       });
-
-      // 그래프 표시 처리 (챕터 1 전용)
-      if (chapterId === "chapter1") {
-        const box = document.getElementById("graph1_box");
-        if (box) {
-          if (showGraph1) {
-            box.style.display = "block";
-            drawGraph1();
-          } else {
-            box.style.display = "none";
-          }
-        }
-      }
 
       const resultEl = document.getElementById(chapterId + "_result");
       resultEl.textContent = `정답: ${correct} / ${total} 문제`;

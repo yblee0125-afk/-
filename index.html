@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>파이썬 방탈출 게임 - 아이돌 & 방탈출</title>
+  <title>파이썬 방탈출 게임</title>
   <style>
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -28,7 +28,25 @@
     .code {
       background: #f5f5f5;
       padding: 8px 10px;
-      borde방탈출 게임 🎮</h1>
+      border-radius: 4px;
+      font-family: "JetBrains Mono", "Consolas", monospace;
+      white-space: pre-wrap;
+    }
+    .hint-buttons {
+      margin-top: 8px;
+    }
+    .hint-box, .answer-box {
+      margin-top: 6px;
+      font-size: 0.95rem;
+    }
+    .result {
+      margin-top: 12px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>파이썬 방탈출 게임 🎮</h1>
   <p>
     수업이 끝난 뒤, 이 페이지를 보면서 <strong>파이썬(Jupyter) 수업 내용을 복습</strong>해 보세요.<br>
     각 챕터는 원하는 만큼 다시 실행하면서 즐겨도 됩니다.
@@ -36,7 +54,7 @@
 
   <hr>
 
-  <!-- ===================== 챕터 1: 아이돌 스토리북 ===================== -->
+  <!-- ===================== 챕터 1: 스트리밍 ===================== -->
   <div class="chapter" id="chapter1">
     <h2>📙 챕터 1. 아이돌 스트리밍 차트 분석</h2>
     <p>
@@ -77,14 +95,14 @@ print(df.head())
         </p>
         <input type="text" />
 
-      <div class="hint-buttons">
-        <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
-        <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
-        <button type="button" class="answer-btn">정답 보기</button>
+        <div class="hint-buttons">
+          <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
+          <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
+          <button type="button" class="answer-btn">정답 보기</button>
+        </div>
+        <div class="hint-box"></div>
+        <div class="answer-box"></div>
       </div>
-      <div class="hint-box"></div>
-      <div class="answer-box"></div>
-    </div>
 
       <!-- 그래프 영역 (정답 맞으면 표시) -->
       <div id="graph1_box" style="display:none; margin-top:12px;">
@@ -97,7 +115,7 @@ print(df.head())
       <h3>Stage 1-2. TITLE 곡만 선택하기</h3>
       <div class="question"
            data-type="short"
-           data-answer="df[df['song']=='TITLE']|df[df[\"song\"]==\"TITLE\"]|df[df['song'] == 'TITLE']|df[df[\"song\"] == \"TITLE\"]|df_title=df[df['song']=='TITLE']|df_title=df[df[\"song\"]==\"TITLE\"]|df_title = df[df['song']=='TITLE']|df_title = df[df[\"song\"]==\"TITLE\"]"
+           data-answer="df[df['song']=='TITLE']|df[df['song'] == 'TITLE']|df_title=df[df['song']=='TITLE']|df_title = df[df['song']=='TITLE']"
            data-hint1="df에서 song 열이 'TITLE'인 행만 골라서 사용합니다. 예: df[ df['song'] == 'TITLE' ]"
            data-hint2="예시 코드:
 df_title = df[df['song'] == 'TITLE']">
@@ -123,7 +141,7 @@ df_title = df[df['song'] == 'TITLE']">
       <!-- 2-1 요일별 합계 -->
       <div class="question"
            data-type="short"
-           data-answer="df.groupby('day')['streams'].sum()|df.groupby(\"day\")[\"streams\"].sum()|streams_by_day=df.groupby('day')['streams'].sum()|streams_by_day=df.groupby(\"day\")[\"streams\"].sum()|streams_by_day = df.groupby('day')['streams'].sum()|streams_by_day = df.groupby(\"day\")[\"streams\"].sum()"
+           data-answer="df.groupby('day')['streams'].sum()|streams_by_day=df.groupby('day')['streams'].sum()|streams_by_day = df.groupby('day')['streams'].sum()"
            data-hint1="groupby 함수를 사용해 'day' 기준으로 묶고, 'streams' 열에 sum()을 적용합니다."
            data-hint2="예시 코드:
 streams_by_day = df.groupby('day')['streams'].sum()">
@@ -144,7 +162,7 @@ streams_by_day = df.groupby('day')['streams'].sum()">
       <!-- 2-2 막대 그래프 -->
       <div class="question"
            data-type="short"
-           data-answer="streams_by_day.plot(kind='bar')|streams_by_day.plot(kind=\"bar\")"
+           data-answer="streams_by_day.plot(kind='bar')"
            data-hint1="pandas의 plot 함수에 kind='bar'를 주면 막대그래프를 그릴 수 있어요."
            data-hint2="예시 코드:
 streams_by_day.plot(kind='bar')">
@@ -194,147 +212,146 @@ def plot_song(df, song_name):
       </div>
     </div>
 
-    <!-- 챕터 1 점수 버튼은 삭제됨 -->
     <div class="result" id="chapter1_result"></div>
   </div>
 
-  <!-- ===================== 챕터 2: 방탈출 연구소 ===================== -->
-<div class="chapter" id="chapter2">
-  <h2>📘 챕터 2. 아이돌 비밀연구실 방탈출</h2>
-  <p>
-    컴백을 앞둔 당신(아이돌 멤버)은 컴백 홍보를 위해 한 예능 프로그램에 나가게 되었습니다.<br>
-    데뷔 초 인터뷰에서 밝혔던 당신의 관심사, 바로 <strong>'AI'</strong>와 <strong>'코딩'</strong>!<br>
-    매니저가 이번에 잡아온 스케줄은 바로 <strong>「뇌섹남: 파이썬」 편</strong>입니다.<br>
-    이제 방송에서 당신의 파이썬 실력을 보여주세요! 🔐
-  </p>
-
-  <!-- Stage 2 -->
-  <div class="stage">
-    <h3>Stage 2 — 정규식 퍼즐 🔍</h3>
-
-    <p><strong>[2-1]</strong>  
-      아래 문장에서 <strong>정규식을 사용해 숫자 2025를 찾는 코드</strong>를 적어보세요.
+  <!-- ===================== 챕터 2: 뇌섹남: 파이썬 ===================== -->
+  <div class="chapter" id="chapter2">
+    <h2>📘 챕터 2. 예능 스케줄: 「뇌섹남: 파이썬」 </h2>
+    <p>
+      컴백을 앞둔 당신(아이돌 멤버)은 컴백 홍보를 위해 한 예능 프로그램에 나가게 되었습니다.<br>
+      데뷔 초 인터뷰에서 밝혔던 당신의 관심사, 바로 <strong>'AI'</strong>와 <strong>'코딩'</strong>!<br>
+      매니저가 이번에 잡아온 스케줄은 바로 <strong>「뇌섹남: 파이썬」 편</strong>입니다.<br>
+      이제 방송에서 당신의 파이썬 실력을 보여주세요! 🔐
     </p>
 
-    <div class="code">
+    <!-- Stage 2 -->
+    <div class="stage">
+      <h3>Stage 2 — 정규식 퍼즐 🔍</h3>
+
+      <p><strong>[2-1]</strong>  
+        아래 문장에서 <strong>정규식을 사용해 숫자 2025를 찾는 코드</strong>를 적어보세요.
+      </p>
+
+      <div class="code">
 import re
 text = "탈출코드는 2025년에 공개된다!"
-    </div>
-
-    <div class="question"
-      data-type="short"
-      data-answer="re.findall(r'\d+',text)|re.findall(r\"\\d+\",text)|re.findall(r'\d+', text)|re.findall(r\"\\d+\", text)|re.search(r'\d+',text).group()|re.search(r\"\\d+\",text).group()"
-      data-hint1="정규식에서 숫자를 찾을 때는 \\d+ 패턴을 사용합니다."
-      data-hint2="예시 코드:
-re.findall(r'\\d+', text)">
-      
-      <input type="text" />
-
-      <div class="hint-buttons">
-        <button class="hint-btn" data-hint="1">힌트 1 보기</button>
-        <button class="hint-btn" data-hint="2">힌트 2 보기</button>
-        <button class="answer-btn">정답 보기</button>
       </div>
 
-      <div class="hint-box"></div>
-      <div class="answer-box"></div>
+      <div class="question"
+        data-type="short"
+        data-answer="re.findall(r'\\d+',text)|re.findall(r'\\d+', text)|re.search(r'\\d+',text).group()|re.search(r'\\d+', text).group()"
+        data-hint1="정규식에서 숫자를 찾을 때는 \\d+ 패턴을 사용합니다."
+        data-hint2="예시 코드:
+re.findall(r'\\d+', text)">
+        
+        <input type="text" />
+
+        <div class="hint-buttons">
+          <button class="hint-btn" data-hint="1" type="button">힌트 1 보기</button>
+          <button class="hint-btn" data-hint="2" type="button">힌트 2 보기</button>
+          <button class="answer-btn" type="button">정답 보기</button>
+        </div>
+
+        <div class="hint-box"></div>
+        <div class="answer-box"></div>
+      </div>
     </div>
-  </div>
 
 
-  <!-- Stage 3 -->
-  <div class="stage">
-    <h3>Stage 3 — 배열 조각 퍼즐 🧮</h3>
+    <!-- Stage 3 -->
+    <div class="stage">
+      <h3>Stage 3 — 배열 조각 퍼즐 🧮</h3>
 
-    <p><strong>[3-1]</strong>  
-      아래 배열 <code>[2, 4, 6]</code>의 값을 <strong>모두 곱하는 코드</strong>를 적어보세요.
-    </p>
+      <p><strong>[3-1]</strong>  
+        아래 배열 <code>[2, 4, 6]</code>의 값을 <strong>모두 곱하는 코드</strong>를 적어보세요.
+      </p>
 
-    <div class="code">
+      <div class="code">
 import numpy as np
 arr = np.array([2, 4, 6])
-    </div>
-
-    <div class="question"
-      data-type="short"
-      data-answer="2*4*6|arr.prod()|np.prod(arr)"
-      data-hint1="배열의 원소를 모두 곱할 때는 np.prod(arr)를 사용할 수도 있어요."
-      data-hint2="예시 코드:
-np.prod(arr)">
-      
-      <input type="text" />
-
-      <div class="hint-buttons">
-        <button class="hint-btn" data-hint="1">힌트 1 보기</button>
-        <button class="hint-btn" data-hint="2">힌트 2 보기</button>
-        <button class="answer-btn">정답 보기</button>
       </div>
 
-      <div class="hint-box"></div>
-      <div class="answer-box"></div>
+      <div class="question"
+        data-type="short"
+        data-answer="2*4*6|arr.prod()|np.prod(arr)"
+        data-hint1="배열의 원소를 모두 곱할 때는 np.prod(arr)를 사용할 수도 있어요."
+        data-hint2="예시 코드:
+np.prod(arr)">
+        
+        <input type="text" />
+
+        <div class="hint-buttons">
+          <button class="hint-btn" data-hint="1" type="button">힌트 1 보기</button>
+          <button class="hint-btn" data-hint="2" type="button">힌트 2 보기</button>
+          <button class="answer-btn" type="button">정답 보기</button>
+        </div>
+
+        <div class="hint-box"></div>
+        <div class="answer-box"></div>
+      </div>
     </div>
-  </div>
 
 
-  <!-- Stage 4 -->
-  <div class="stage">
-    <h3>Stage 4 — 인덱싱 / 슬라이싱 ✂</h3>
+    <!-- Stage 4 -->
+    <div class="stage">
+      <h3>Stage 4 — 인덱싱 / 슬라이싱 ✂</h3>
 
-    <!-- 4-1 -->
-    <div class="question"
-      data-type="short"
-      data-answer="word[1]"
-      data-hint1="파이썬은 0부터 시작해요. 두 번째 글자 = 인덱스 1"
-      data-hint2="예시 코드:
+      <!-- 4-1 -->
+      <div class="question"
+        data-type="short"
+        data-answer="word[1]"
+        data-hint1="파이썬은 0부터 시작해요. 두 번째 글자 = 인덱스 1"
+        data-hint2="예시 코드:
 word[1]">
 
-      <p><strong>[4-1]</strong>  
-        문자열 <code>word = "HELLO"</code> 에서  
-        <strong>두 번째 글자</strong>를 꺼내는 코드를 적어보세요.
-      </p>
+        <p><strong>[4-1]</strong>  
+          문자열 <code>word = "HELLO"</code> 에서  
+          <strong>두 번째 글자</strong>를 꺼내는 코드를 적어보세요.
+        </p>
 
-      <input type="text" />
+        <input type="text" />
 
-      <div class="hint-buttons">
-        <button class="hint-btn" data-hint="1">힌트 1 보기</button>
-        <button class="hint-btn" data-hint="2">힌트 2 보기</button>
-        <button class="answer-btn">정답 보기</button>
+        <div class="hint-buttons">
+          <button class="hint-btn" data-hint="1" type="button">힌트 1 보기</button>
+          <button class="hint-btn" data-hint="2" type="button">힌트 2 보기</button>
+          <button class="answer-btn" type="button">정답 보기</button>
+        </div>
+
+        <div class="hint-box"></div>
+        <div class="answer-box"></div>
       </div>
 
-      <div class="hint-box"></div>
-      <div class="answer-box"></div>
-    </div>
 
-
-    <!-- 4-2 -->
-    <div class="question"
-      data-type="short"
-      data-answer="text[5:9]|text[5: ]|text[5:]"
-      data-hint1="'ROOM'은 인덱스 5부터 시작해요."
-      data-hint2="예시 코드:
+      <!-- 4-2 -->
+      <div class="question"
+        data-type="short"
+        data-answer="text[5:9]|text[5: ]|text[5:]"
+        data-hint1="'ROOM'은 인덱스 5부터 시작해요."
+        data-hint2="예시 코드:
 text[5:9]">
 
-      <p><strong>[4-2]</strong>  
-        문자열 <code>text = "ESCAPEROOM"</code> 에서  
-        <strong>"ROOM"</strong>을 꺼내는 코드를 적어보세요.
-      </p>
+        <p><strong>[4-2]</strong>  
+          문자열 <code>text = "ESCAPEROOM"</code> 에서  
+          <strong>"ROOM"</strong>을 꺼내는 코드를 적어보세요.
+        </p>
 
-      <input type="text" />
+        <input type="text" />
 
-      <div class="hint-buttons">
-        <button class="hint-btn" data-hint="1">힌트 1 보기</button>
-        <button class="hint-btn" data-hint="2">힌트 2 보기</button>
-        <button class="answer-btn">정답 보기</button>
+        <div class="hint-buttons">
+          <button class="hint-btn" data-hint="1" type="button">힌트 1 보기</button>
+          <button class="hint-btn" data-hint="2" type="button">힌트 2 보기</button>
+          <button class="answer-btn" type="button">정답 보기</button>
+        </div>
+
+        <div class="hint-box"></div>
+        <div class="answer-box"></div>
       </div>
-
-      <div class="hint-box"></div>
-      <div class="answer-box"></div>
     </div>
-  </div>
 
-  <button onclick="checkChapter('chapter2')">챕터 2 점수 확인하기</button>
-  <div class="result" id="chapter2_result"></div>
-</div>
+    <button onclick="checkChapter('chapter2')" type="button">챕터 2 점수 확인하기</button>
+    <div class="result" id="chapter2_result"></div>
+  </div>
 
 
   <!-- ===================== SCRIPT ===================== -->
@@ -450,9 +467,9 @@ text[5:9]">
         if (input && ansAttr) {
           const answers = ansAttr
             .split("|")
-            .map(a => a.trim().replace(/\s+/g, "").toLowerCase());
+            .map(a => a.trim().replace(/\\s+/g, "").toLowerCase());
           input.addEventListener("input", function () {
-            const user = (input.value || "").trim().replace(/\s+/g, "").toLowerCase();
+            const user = (input.value || "").trim().replace(/\\s+/g, "").toLowerCase();
             const box = document.getElementById("graph1_box");
             if (!box) return;
             if (answers.includes(user)) {
@@ -478,12 +495,12 @@ text[5:9]">
         const answerAttr = q.getAttribute('data-answer');
         if (!answerAttr || type !== 'short') return;
 
-        const answers = answerAttr.split("|").map(a => a.trim().replace(/\s+/g, "").toLowerCase());
+        const answers = answerAttr.split("|").map(a => a.trim().replace(/\\s+/g, "").toLowerCase());
         const input = q.querySelector('input[type="text"], textarea');
         if (!input) return;
 
         const userRaw = (input.value || "").trim();
-        const user = userRaw.replace(/\s+/g, "").toLowerCase();
+        const user = userRaw.replace(/\\s+/g, "").toLowerCase();
 
         total += 1;
         if (answers.includes(user)) {

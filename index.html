@@ -60,7 +60,7 @@
     .hint-buttons {
       margin-top: 6px;
     }
-    .hint-btn {
+    .hint-btn, .answer-btn {
       font-size: 12px;
       padding: 4px 8px;
       margin-right: 4px;
@@ -68,11 +68,11 @@
       border: 1px solid #bdbdbd;
       border-radius: 4px;
     }
-    .hint-btn.used {
-      background: #ffd54f; /* 노란색 느낌 */
+    .hint-btn.used, .answer-btn.used {
+      background: #ffd54f;
       border-color: #ffb300;
     }
-    .hint-box {
+    .hint-box, .answer-box {
       margin-top: 4px;
       font-size: 13px;
       color: #555;
@@ -97,15 +97,8 @@
       Jupyter에서 코드를 직접 실행해보고, 아래 문제도 풀어보세요.
     </p>
 
-    <!-- Stage 1 -->
-    <div class="stage">
-      <h3>Stage 1. 일별 스트리밍 그래프 그리기</h3>
-      <p>
-        아래는 우리 그룹의 <strong>타이틀곡(TITLE)과 수록곡(B-SIDE)의 일별 스트리밍 수</strong>입니다.
-        이 데이터를 Jupyter에 복사해서 그래프를 직접 그려보세요.
-      </p>
-
-      <div class="code">
+    <!-- 공통 데이터 코드 (유지) -->
+    <div class="code">
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -118,138 +111,115 @@ data = {
 
 df = pd.DataFrame(data)
 print(df.head())
+    </div>
+
+    <!-- Stage 1 -->
+    <div class="stage">
+      <h3>Stage 1. 일별 스트리밍 그래프 그리기</h3>
+
+      <!-- 1-1 그래프 그리기(설명만, 채점X) -->
+      <div class="question" data-type="text">
+        <p><strong>[1-1]</strong>  
+          위 데이터를 활용해서, 타이틀곡 <strong>"TITLE"</strong>의 일별 스트리밍 그래프를 Jupyter에서 직접 그려보세요.
+          (이 문제는 자유 활동 문제라 자동 채점하지 않습니다.)
+        </p>
+        <textarea rows="2" placeholder="그래프를 그리면서 느낀 점이나 궁금한 점을 적어보세요."></textarea>
       </div>
 
-      <p><strong>미션 1-1.</strong> 타이틀곡만 골라서 일별 스트리밍 그래프를 그려보세요.</p>
-      <div class="code">
-# TODO: 'TITLE'만 골라서 df_title에 담아보세요.
-df_title = df[df["song"] == "TITLE"]
-
-plt.plot(df_title["day"], df_title["streams"])
-plt.title("우리 그룹 타이틀곡 일별 스트리밍")
-plt.xlabel("요일")
-plt.ylabel("스트리밍 수")
-plt.show()
-      </div>
-
+      <!-- 1-2 조건 필터링 문제: 힌트1=설명+함수, 힌트2=코드 -->
       <div class="question"
            data-type="short"
-           data-answer="변화를 한눈에 보기 위해|변화를 한눈에 보기 위해서"
-           data-hint1="그래프는 숫자를 그림처럼 보여줘요."
-           data-hint2="'변화'를 '한눈에' 볼 수 있다는 표현을 떠올려보세요.">
-        <p><strong>[Q1]</strong>  
-          그래프를 사용하는 가장 큰 이유를 한 문장으로 적어보세요.
+           data-answer="df[df['song']=='TITLE']|df[df[\"song\"]==\"TITLE\"]|df[df['song'] == 'TITLE']|df[df[\"song\"] == \"TITLE\"]|df_title=df[df['song']=='TITLE']|df_title=df[df[\"song\"]==\"TITLE\"]|df_title = df[df['song']== 'TITLE']|df_title = df[df[\"song\"]==\"TITLE\"]"
+           data-hint1="df에서 'song' 열이 'TITLE'인 행만 골라서 사용합니다. 예: df[ df['song'] == 'TITLE' ] 형태예요."
+           data-hint2="예시 코드:  df_title = df[df['song'] == 'TITLE']">
+        <p><strong>[1-2]</strong>  
+          <strong>TITLE</strong> 곡만 선택해서 새로운 데이터프레임 <code>df_title</code>에 담는 코드를 한 줄로 적어보세요.
         </p>
-        <input type="text" placeholder="예: 변화를 한눈에 보기 위해" />
+        <input type="text" placeholder="예: df_title = df[df['song'] == 'TITLE']" />
+
         <div class="hint-buttons">
           <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
           <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
+          <button type="button" class="answer-btn">정답 보기</button>
         </div>
         <div class="hint-box"></div>
+        <div class="answer-box"></div>
       </div>
     </div>
 
     <!-- Stage 2 -->
     <div class="stage">
-      <h3>Stage 2. 같은 데이터끼리 묶어보기 (groupby 개념)</h3>
-      <p>
-        이번에는 요일별로 스트리밍 수를 모아보고 싶습니다.  
-        즉, <strong>'같은 요일'끼리 데이터를 묶어서 합계</strong>를 내는 것입니다.
-      </p>
+      <h3>Stage 2. 같은 데이터끼리 묶어보기 (요일별 합계 & 막대그래프)</h3>
 
-      <div class="code">
-# 요일별 스트리밍 합계 구하기
-streams_by_day = df.groupby("day")["streams"].sum()
-print(streams_by_day)
-
-# 막대 그래프로 그리기
-streams_by_day.plot(kind="bar")
-plt.title("요일별 전체 스트리밍 합계")
-plt.xlabel("요일")
-plt.ylabel("스트리밍 수")
-plt.show()
-      </div>
-
+      <!-- 2-1 요일별 스트리밍 합계 구하기 -->
       <div class="question"
            data-type="short"
-           data-answer="같은 요일끼리 데이터를 묶어서 합계를 구한다|같은 요일별로 데이터를 묶어서 합계를 구한다"
-           data-hint1="'group'은 '묶다'라는 뜻이에요."
-           data-hint2="같은 '요일(day)'끼리 묶어서 합계를 내는 느낌이에요.">
-        <p><strong>[Q2]</strong>  
-          <code>df.groupby("day")["streams"].sum()</code> 코드는 무엇을 하는 코드인지 설명해보세요.
+           data-answer="df.groupby('day')['streams'].sum()|df.groupby(\"day\")[\"streams\"].sum()|streams_by_day=df.groupby('day')['streams'].sum()|streams_by_day=df.groupby(\"day\")[\"streams\"].sum()|streams_by_day = df.groupby('day')['streams'].sum()|streams_by_day = df.groupby(\"day\")[\"streams\"].sum()"
+           data-hint1="groupby 함수를 사용해 'day' 기준으로 묶고, 'streams' 열에 sum()을 적용합니다."
+           data-hint2="예시 코드:  streams_by_day = df.groupby('day')['streams'].sum()">
+        <p><strong>[2-1]</strong>  
+          요일(<code>day</code>)별 스트리밍 합계를 구하는 코드를 한 줄로 적어보세요.
         </p>
-        <textarea rows="2" placeholder="예: 같은 요일끼리 데이터를 묶어서 합계를 구한다"></textarea>
+        <input type="text" placeholder="예: streams_by_day = df.groupby('day')['streams'].sum()" />
+
         <div class="hint-buttons">
           <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
           <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
+          <button type="button" class="answer-btn">정답 보기</button>
         </div>
         <div class="hint-box"></div>
+        <div class="answer-box"></div>
       </div>
 
+      <!-- 2-2 막대 그래프로 그리기 -->
       <div class="question"
            data-type="short"
-           data-answer="groupby"
-           data-hint1="함수 이름은 g로 시작해요."
-           data-hint2="df.________('day')에서 빈칸에 들어가는 단어예요.">
-        <p><strong>[Q3]</strong>  
-          파이썬에서 "어떤 기준으로 데이터를 묶어서 계산"할 때 자주 쓰는 함수 이름은 무엇일까요?<br>
-          (힌트: <code>df.________("day")</code> 형태로 썼습니다.)
+           data-answer="streams_by_day.plot(kind='bar')|streams_by_day.plot(kind=\"bar\")"
+           data-hint1="pandas의 plot 함수에 kind='bar'를 주면 막대그래프를 그릴 수 있어요."
+           data-hint2="예시 코드:  streams_by_day.plot(kind='bar')">
+        <p><strong>[2-2]</strong>  
+          <code>streams_by_day</code> 데이터를 이용해 <strong>막대 그래프</strong>를 그리는 코드를 한 줄로 적어보세요.
         </p>
-        <input type="text" placeholder="소문자로 입력 (예: groupby)" />
+        <input type="text" placeholder="예: streams_by_day.plot(kind='bar')" />
+
         <div class="hint-buttons">
           <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
           <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
+          <button type="button" class="answer-btn">정답 보기</button>
         </div>
         <div class="hint-box"></div>
+        <div class="answer-box"></div>
       </div>
     </div>
 
     <!-- Stage 3 -->
     <div class="stage">
-      <h3>Stage 3. 자동 차트 생성 버튼 만들기 (함수 복습)</h3>
-      <p>
-        같은 코드를 계속 반복해서 쓰는 대신, <strong>함수(function)</strong>를 만들어  
-        <strong>버튼처럼 한 번에 실행</strong>할 수 있습니다.
-      </p>
+      <h3>Stage 3. 자동 차트 생성 버튼 만들기 (함수 만들기)</h3>
 
-      <div class="code">
-def plot_song(df, song_name):
-    song_df = df[df["song"] == song_name]
-    plt.plot(song_df["day"], song_df["streams"])
-    plt.title(f"{song_name} 일별 스트리밍")
-    plt.xlabel("요일")
-    plt.ylabel("스트리밍 수")
-    plt.show()
-
-# 사용 예시
-plot_song(df, "TITLE")
-plot_song(df, "B-SIDE")
-      </div>
-
+      <!-- 3-1 함수 만들어 시각화하기 (설명+힌트 위주, 채점X) -->
       <div class="question"
-           data-type="short"
-           data-answer="노래 이름을 넣으면 자동으로 그래프를 그려주는 함수|노래 이름을 넣으면 그래프를 그려주는 함수"
-           data-hint1="함수 이름은 plot_song 이에요."
-           data-hint2="노래 제목을 넣으면, 그 노래의 일별 스트리밍 그래프가 나와요.">
-        <p><strong>[Q4]</strong>  
-          위 코드에서 <code>plot_song</code> 함수는 어떤 역할을 하나요? 한 문장으로 설명해보세요.
+           data-type="text"
+           data-hint1="함수 안에서 song_name으로 행을 필터링하고, plt.plot으로 day와 streams를 그립니다."
+           data-hint2="예시 코드:
+def plot_song(df, song_name):
+    song_df = df[df['song'] == song_name]
+    plt.plot(song_df['day'], song_df['streams'])
+    plt.title(f'{song_name} 일별 스트리밍')
+    plt.xlabel('요일')
+    plt.ylabel('스트리밍 수')
+    plt.show()">
+        <p><strong>[3-1]</strong>  
+          노래 이름(<code>song_name</code>)을 넣으면 자동으로 그 노래의 일별 스트리밍 그래프를 그려주는 함수를 만들어 보세요.  
+          (이 문제는 자유 코딩 문제라 자동 채점하지 않습니다.)
         </p>
-        <textarea rows="2" placeholder="예: 노래 이름을 넣으면 자동으로 그래프를 그려주는 함수"></textarea>
+        <textarea rows="4" placeholder="def plot_song(df, song_name): ... 형태로 함수를 직접 써보세요."></textarea>
+
         <div class="hint-buttons">
           <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
           <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
         </div>
         <div class="hint-box"></div>
-      </div>
-
-      <div class="question" data-type="text">
-        <p><strong>[Q5]</strong>  
-          만약 너라면, 우리 그룹용 자동 차트 생성기에 어떤 이름을 붙이고 싶나요?<br>
-          예시: <code>idol_chart_auto()</code>, <code>my_group_report()</code> 등
-          (자유롭게 적어보세요. 자동 채점은 하지 않습니다 😊)
-        </p>
-        <textarea rows="2" placeholder="함수 이름을 상상해서 적어보세요"></textarea>
-        <div class="hint-box">※ 이 문제는 정답이 없는 자유 입력 문제입니다.</div>
+        <div class="answer-box"></div>
       </div>
     </div>
 
@@ -257,110 +227,79 @@ plot_song(df, "B-SIDE")
     <div class="result" id="chapter1_result"></div>
   </div>
 
-  <!-- ===================== 챕터 2: 방탈출 퍼즐 ===================== -->
+  <!-- ===================== 챕터 2: 방탈출 연구소 (이전 버전 그대로) ===================== -->
   <div class="chapter" id="chapter2">
     <h2>📘 챕터 2. 데이터 퍼즐 방탈출 연구소</h2>
-    <p>
-      이번에는 <strong>정규식, 배열/NumPy, 인덱싱, 슬라이싱</strong>을 복습하는 챕터입니다.<br>
-      너는 비밀 연구소에 초대된 연구원이며, 각 퍼즐을 풀어 <strong>방을 탈출</strong>해야 합니다.
-    </p>
 
-    <!-- Stage 1: 정규식 -->
+    <!-- Stage 1 -->
     <div class="stage">
-      <h3>Stage 1. 정규식으로 숨겨진 전화번호 찾기</h3>
-      <p>아래 코드를 Jupyter에서 실행해보고, 정규식이 무엇을 하는지 확인해보세요.</p>
-
-      <div class="code">
-import re
-
-text = "문의: 010-1234-5678 / 비상연락망: 010-9999-8888"
-
-phones = re.findall(r"\d{3}-\d{4}-\d{4}", text)
-print(phones)
-      </div>
+      <h3>Stage 1. 정규식 퍼즐</h3>
 
       <div class="question"
            data-type="short"
            data-answer="000-0000-0000 형태의 전화번호를 찾는다|전화번호 형태의 숫자 패턴을 찾는다|전화번호를 찾는다"
            data-hint1="\d는 숫자를 의미해요."
-           data-hint2="전화번호처럼 3-4-4 자리 숫자를 찾는 패턴이에요.">
+           data-hint2="3-4-4 자리 숫자 패턴을 찾는 정규식이에요.">
         <p><strong>[Q6]</strong>  
-          위 정규식 <code>\d{3}-\d{4}-\d{4}</code>는 어떤 패턴을 찾는 걸까요?
+          <code>\d{3}-\d{4}-\d{4}</code> 정규식은 어떤 패턴을 찾나요?
         </p>
-        <textarea rows="2" placeholder="예: 000-0000-0000 형태의 전화번호를 찾는다"></textarea>
+        <textarea rows="2"></textarea>
+
         <div class="hint-buttons">
           <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
           <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
+          <button type="button" class="answer-btn">정답 보기</button>
         </div>
         <div class="hint-box"></div>
+        <div class="answer-box"></div>
       </div>
     </div>
 
-    <!-- Stage 2: 배열/인덱싱 -->
+    <!-- Stage 2 -->
     <div class="stage">
-      <h3>Stage 2. 배열의 중앙 값을 찾아라 (NumPy + 인덱싱)</h3>
-      <p>아래 배열에서 중앙에 있는 값을 인덱싱으로 꺼내보세요.</p>
-
-      <div class="code">
-import numpy as np
-
-arr = np.array([[1,2,3],
-                [4,5,6],
-                [7,8,9]])
-
-# TODO: 중앙 값(5)을 인덱싱으로 꺼내서 answer에 넣어보세요.
-answer = arr[1, 1]
-print(answer)
-      </div>
+      <h3>Stage 2. 배열 중앙값 찾기</h3>
 
       <div class="question"
            data-type="short"
            data-answer="arr[1,1]|arr[1, 1]"
-           data-hint1="파이썬 인덱스는 0부터 시작해요."
-           data-hint2="두 번째 행, 두 번째 열의 값을 가져와야 해요.">
+           data-hint1="인덱스는 0부터 시작해요."
+           data-hint2="두 번째 행, 두 번째 열이에요.">
         <p><strong>[Q7]</strong>  
-          중앙 값 5를 가져오기 위한 인덱싱 코드를 정확히 적어보세요.<br>
-          예시 형식: <code>arr[0,0]</code>
+          중앙 값 5를 가져오기 위한 인덱싱 코드를 적어보세요.
         </p>
         <input type="text" placeholder="예: arr[1,1]" />
+
         <div class="hint-buttons">
           <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
           <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
+          <button type="button" class="answer-btn">정답 보기</button>
         </div>
         <div class="hint-box"></div>
+        <div class="answer-box"></div>
       </div>
     </div>
 
-    <!-- Stage 3: 슬라이싱 -->
+    <!-- Stage 3 -->
     <div class="stage">
-      <h3>Stage 3. 슬라이싱으로 ESCAPE 만들기</h3>
-      <p>
-        아래 문자열 <code>secret</code>에서 슬라이싱을 사용해 <strong>"ESCAPE"</strong>를 뽑아내는 코드를 만들어보세요.
-      </p>
-
-      <div class="code">
-secret = "DATA_ESCAPE_ROOM"
-
-# TODO: 슬라이싱으로 "ESCAPE"만 잘라서 answer에 넣어보세요.
-answer = secret[5:11]
-print(answer)  # ESCAPE
-      </div>
+      <h3>Stage 3. 문자열 슬라이싱</h3>
 
       <div class="question"
            data-type="short"
            data-answer="secret[5:11]|secret[5:11 ]"
-           data-hint1="문자열의 인덱스도 0부터 시작해요."
-           data-hint2="E의 위치는 5, M 앞까지 잘라야 하니 11까지 잘라야 해요.">
+           data-hint1="문자열 시작 인덱스는 0이에요."
+           data-hint2="'ESCAPE'의 시작 인덱스는 5입니다.">
         <p><strong>[Q8]</strong>  
-          <strong>"ESCAPE"</strong>만 가져오기 위한 슬라이싱 표현을 정확히 적어보세요.<br>
-          예시 형식: <code>secret[0:4]</code>
+          <strong>ESCAPE</strong>만 가져오기 위한 슬라이싱 코드를 적어보세요.
         </p>
         <input type="text" placeholder="예: secret[5:11]" />
+
         <div class="hint-buttons">
           <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
           <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
+          <button type="button" class="answer-btn">정답 보기</button>
         </div>
         <div class="hint-box"></div>
+        <div class="answer-box"></div>
       </div>
     </div>
 
@@ -368,27 +307,42 @@ print(answer)  # ESCAPE
     <div class="result" id="chapter2_result"></div>
   </div>
 
+  <!-- ===================== SCRIPT ===================== -->
   <script>
-    // 힌트 버튼 기능
+    // 힌트 및 정답 보기 버튼 기능
     document.addEventListener("DOMContentLoaded", function () {
-      const hintButtons = document.querySelectorAll(".hint-btn");
+      const questions = document.querySelectorAll(".question");
 
-      hintButtons.forEach(btn => {
-        btn.addEventListener("click", function () {
-          const question = btn.closest(".question");
-          const idx = btn.getAttribute("data-hint"); // "1" 또는 "2"
-          const hintText = question.getAttribute("data-hint" + idx);
-          if (!hintText) return;
+      questions.forEach(q => {
+        const hintBox = q.querySelector(".hint-box");
+        const answerBox = q.querySelector(".answer-box");
 
-          const hintBox = question.querySelector(".hint-box");
-          hintBox.textContent = hintText;
-
-          btn.classList.add("used"); // 색 변경
+        // 힌트 버튼
+        const hintButtons = q.querySelectorAll(".hint-btn");
+        hintButtons.forEach(btn => {
+          btn.addEventListener("click", function () {
+            const idx = btn.getAttribute("data-hint");
+            const hintText = q.getAttribute("data-hint" + idx);
+            hintBox.textContent = hintText || "";
+            btn.classList.add("used");
+          });
         });
+
+        // 정답 버튼
+        const answerBtn = q.querySelector(".answer-btn");
+        if (answerBtn) {
+          answerBtn.addEventListener("click", function () {
+            const ansAttr = q.getAttribute("data-answer");
+            if (!ansAttr) return;
+            const firstAnswer = ansAttr.split("|")[0];
+            answerBox.textContent = "정답: " + firstAnswer;
+            answerBtn.classList.add("used");
+          });
+        }
       });
     });
 
-    // 챕터 채점 기능
+    // 챕터 채점 기능 (data-type="short"인 문제만 채점)
     function checkChapter(chapterId) {
       const chapter = document.getElementById(chapterId);
       const questions = chapter.querySelectorAll('.question');
@@ -398,40 +352,23 @@ print(answer)  # ESCAPE
       questions.forEach(q => {
         const type = q.getAttribute('data-type');
         const answerAttr = q.getAttribute('data-answer');
+        if (!answerAttr || type !== 'short') return;
 
-        // data-answer가 없으면 (예: 자유 서술형) 채점 대상이 아님
-        if (!answerAttr) return;
+        const answers = answerAttr.split("|").map(a => a.trim().replace(/\s+/g, ""));
+        const input = q.querySelector('input[type="text"], textarea');
+        if (!input) return;
 
-        if (type === 'short') {
-          // 짧은 주관식/텍스트 기반 채점
-          const input = q.querySelector('input[type="text"], textarea');
-          if (!input) return;
+        const userRaw = (input.value || "").trim();
+        const user = userRaw.replace(/\s+/g, "");
 
-          const userRaw = (input.value || "").trim();
-          if (!userRaw) {
-            total += 1;
-            return;
-          }
-
-          const user = userRaw.replace(/\s+/g, ""); // 공백 제거
-          const answers = answerAttr.split('|').map(a => a.trim().replace(/\s+/g, ""));
-
-          total += 1;
-          if (answers.includes(user)) {
-            correct += 1;
-          }
-        } else {
-          // data-type="text" 등은 채점하지 않음
-          return;
+        total += 1;
+        if (answers.includes(user)) {
+          correct += 1;
         }
       });
 
       const resultEl = document.getElementById(chapterId + "_result");
-      if (total === 0) {
-        resultEl.textContent = "채점할 문제가 없습니다.";
-      } else {
-        resultEl.textContent = `정답: ${correct} / ${total} 문제`;
-      }
+      resultEl.textContent = `정답: ${correct} / ${total} 문제`;
     }
   </script>
 </body>

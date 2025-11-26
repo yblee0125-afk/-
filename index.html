@@ -1,516 +1,1329 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8">
-  <title>파이썬 방탈출 게임</title>
+  <meta charset="UTF-8" />
+  <title>파이썬 방탈출 퀴즈</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      line-height: 1.6;
-      padding: 16px;
-      max-width: 900px;
-      margin: 0 auto;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui,
+        sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #dbeafe;
+      color: #1f2933;
     }
-    h1, h2, h3 {
-      margin-top: 1.4em;
+
+    /* 상단 HUD */
+    .hud {
+      height: 60px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 1px 4px rgba(15, 23, 42, 0.12);
+      backdrop-filter: blur(10px);
+      position: sticky;
+      top: 0;
+      z-index: 20;
     }
-    .chapter {
-      border: 1px solid #ccc;
-      padding: 12px 16px;
-      margin-bottom: 20px;
-      border-radius: 8px;
+
+    .hud-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
     }
-    .stage {
-      border-top: 1px dashed #ddd;
-      padding-top: 10px;
-      margin-top: 10px;
+
+    .hud-title {
+      font-size: 16px;
     }
-    .code {
-      background: #f5f5f5;
+
+    .hud-pill {
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .hud-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+    }
+
+    .avatar-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4338ca;
+      font-size: 12px;
+    }
+
+    .score-tag {
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #fef3c7;
+      color: #92400e;
+      font-size: 12px;
+    }
+
+    /* 메인 래퍼 */
+    .map-wrapper {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .map-area {
+      position: relative;
+      width: min(1100px, 100%);
+      aspect-ratio: 16 / 9;
+      border-radius: 24px;
+      overflow: hidden;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.25);
+      background: linear-gradient(
+        135deg,
+        #a7f3d0 0%,
+        #bfdbfe 35%,
+        #fef3c7 70%,
+        #fecaca 100%
+      );
+    }
+
+    .map-area::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: url("campus-map.png") center/cover no-repeat;
+      opacity: 0.85;
+      pointer-events: none;
+    }
+
+    /* 공통 숨김 */
+    .hidden {
+      display: none !important;
+    }
+
+    /* ==== 메인 룸 선택 ==== */
+    .room-select {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 18px;
+      z-index: 2;
+      backdrop-filter: blur(2px);
+    }
+
+    .room-select-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #111827;
+      text-shadow: 0 2px 4px rgba(15, 23, 42, 0.25);
+      margin-bottom: 4px;
+    }
+
+    .room-select-sub {
+      font-size: 13px;
+      color: #374151;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .room-grid {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .room-card {
+      width: 260px;
+      max-width: 90vw;
+      background: rgba(255, 255, 255, 0.94);
+      border-radius: 20px;
+      padding: 14px 16px 14px;
+      box-shadow: 0 10px 24px rgba(15, 23, 42, 0.3);
+      border: 1px solid rgba(148, 163, 184, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      backdrop-filter: blur(8px);
+    }
+
+    .room-title {
+      font-size: 15px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .room-tagline {
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .room-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+      font-size: 11px;
+      color: #4b5563;
+    }
+
+    .room-meta span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .enter-btn {
+      margin-top: 8px;
+      border-radius: 999px;
+      border: none;
       padding: 8px 10px;
-      border-radius: 4px;
-      font-family: "JetBrains Mono", "Consolas", monospace;
-      white-space: pre-wrap;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #6366f1;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      align-self: flex-end;
+      transition: background 0.12s ease, transform 0.08s ease,
+        box-shadow 0.12s ease;
     }
-    .hint-buttons {
+
+    .enter-btn:hover {
+      background: #4f46e5;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 16px rgba(79, 70, 229, 0.45);
+    }
+
+    /* ===== 데이터·그래프 방 내부 맵 ===== */
+    .room-map {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .room-map-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #111827;
+      text-shadow: 0 1px 2px rgba(15, 23, 42, 0.3);
+    }
+
+    .room-map-title {
+      font-size: 17px;
+      font-weight: 800;
+    }
+
+    .room-map-sub {
+      font-size: 13px;
+    }
+
+    .back-btn {
+      border-radius: 999px;
+      border: none;
+      padding: 6px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      background: rgba(15, 23, 42, 0.8);
+      color: #f9fafb;
+    }
+
+    .room-map-body {
+      position: relative;
+      flex: 1;
+      margin-top: 10px;
+      border-radius: 16px;
+      border: 1px dashed rgba(15, 23, 42, 0.25);
+      background: radial-gradient(circle at top, rgba(255, 255, 255, 0.85), rgba(241, 245, 249, 0.9));
+      overflow: hidden;
+    }
+
+    /* 문제 위치 마커 */
+    .spot {
+      position: absolute;
+      transform: translate(-50%, -50%);
+      width: 56px;
+      height: 56px;
+      border-radius: 999px;
+      border: 3px solid rgba(31, 41, 55, 0.15);
+      background: rgba(255, 255, 255, 0.95);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      font-weight: 700;
+      color: #374151;
+      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.35);
+      z-index: 3;
+      transition: transform 0.12s ease, box-shadow 0.12s ease,
+        background 0.12s ease, border-color 0.12s ease;
+    }
+
+    .spot:hover {
+      transform: translate(-50%, -50%) translateY(-2px);
+      box-shadow: 0 12px 24px rgba(15, 23, 42, 0.45);
+      background: #eef2ff;
+    }
+
+    .spot-cleared {
+      background: #dcfce7;
+      border-color: #22c55e;
+      color: #14532d;
+    }
+
+    /* 난이도별 테두리색 */
+    .spot-very-easy {
+      border-color: #22c55e;
+    }
+    .spot-easy {
+      border-color: #60a5fa;
+    }
+    .spot-normal {
+      border-color: #f97316;
+    }
+    .spot-hard {
+      border-color: #111827;
+    }
+
+    /* 중앙 퀴즈 카드 */
+    .quiz-card {
+      position: absolute;
+      inset: 50% auto auto 50%;
+      transform: translate(-50%, -50%);
+      width: min(520px, 90%);
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 24px 26px 22px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.35);
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      z-index: 5;
+    }
+
+    .quiz-card.hidden {
+      display: none;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .quiz-badges {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      flex-wrap: wrap;
+    }
+
+    .badge {
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: #eff6ff;
+      color: #1d4ed8;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .badge-progress {
+      background: #eef2ff;
+      color: #4b5563;
+    }
+
+    .badge-difficulty {
+      background: #fef3c7;
+      color: #92400e;
+    }
+
+    .badge-part {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+
+    .badge-difficulty.very_easy {
+      background: #ecfdf5;
+      color: #166534;
+    }
+
+    .badge-difficulty.easy {
+      background: #e0f2fe;
+      color: #1d4ed8;
+    }
+
+    .badge-difficulty.normal {
+      background: #fee2e2;
+      color: #b91c1c;
+    }
+
+    .badge-difficulty.hard {
+      background: #111827;
+      color: #f9fafb;
+    }
+
+    .quiz-close {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      line-height: 1;
+      color: #9ca3af;
+    }
+
+    .quiz-question-title {
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .quiz-subtitle {
+      font-size: 13px;
+      color: #6b7280;
+      margin-top: 4px;
+    }
+
+    .options {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 4px;
+    }
+
+    .option-btn {
+      width: 100%;
+      border-radius: 999px;
+      padding: 10px 14px;
+      border: 1px solid transparent;
+      background: #f3f4ff;
+      cursor: pointer;
+      text-align: left;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.12s ease, transform 0.08s ease,
+        box-shadow 0.12s ease, border-color 0.12s ease;
+    }
+
+    .option-btn span {
+      pointer-events: none;
+    }
+
+    .option-btn:hover {
+      background: #e0e7ff;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 14px rgba(148, 163, 184, 0.45);
+    }
+
+    .option-btn.selected {
+      background: #e0ecff;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.25);
+    }
+
+    .option-btn.correct {
+      background: #ecfdf3;
+      border-color: #16a34a;
+      color: #166534;
+    }
+
+    .option-btn.wrong {
+      background: #fef2f2;
+      border-color: #dc2626;
+      color: #b91c1c;
+    }
+
+    .quiz-footer {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .submit-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 11px 14px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      background: #6366f1;
+      color: white;
+      transition: background 0.12s ease, transform 0.08s ease,
+        box-shadow 0.12s ease;
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.5;
+      cursor: default;
+      box-shadow: none;
+      transform: none;
+    }
+
+    .submit-btn:hover:not(:disabled) {
+      background: #4f46e5;
+      transform: translateY(-1px);
+      box-shadow: 0 10px 18px rgba(79, 70, 229, 0.4);
+    }
+
+    .feedback {
+      font-size: 13px;
+      min-height: 18px;
+    }
+
+    .feedback.correct {
+      color: #15803d;
+    }
+
+    .feedback.wrong {
+      color: #b91c1c;
+    }
+
+    .short-input {
+      width: 100%;
+      border-radius: 10px;
+      border: 1px solid #d1d5db;
+      padding: 8px 10px;
+      font-size: 14px;
       margin-top: 8px;
     }
-    .hint-box, .answer-box {
-      margin-top: 6px;
-      font-size: 0.95rem;
+
+    .short-input:focus {
+      outline: none;
+      border-color: #4f46e5;
+      box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.16);
     }
-    .result {
-      margin-top: 12px;
-      font-weight: bold;
+
+    .final-title {
+      font-size: 20px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .final-score {
+      font-size: 16px;
+      margin-top: 4px;
+      text-align: center;
+      color: #374151;
+    }
+
+    .final-msg {
+      font-size: 13px;
+      color: #6b7280;
+      text-align: center;
+      margin-top: 6px;
+    }
+
+    .secondary-btn {
+      border-radius: 999px;
+      border: 1px solid #d1d5db;
+      padding: 8px 12px;
+      font-size: 13px;
+      background: white;
+      cursor: pointer;
+    }
+
+    .secondary-btn:hover {
+      background: #f3f4f6;
+    }
+
+    .final-actions {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    /* 힌트 버튼 */
+    .hint-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 7px 12px;
+      font-size: 13px;
+      cursor: pointer;
+      background: #e5e7eb;
+      color: #374151;
+      align-self: flex-start;
+      transition: background 0.12s ease, color 0.12s ease, transform 0.08s ease;
+    }
+
+    .hint-btn:hover {
+      background: #d1d5db;
+      transform: translateY(-1px);
+    }
+
+    .hint-btn.hint-stage1 {
+      background: #9ca3af;
+      color: #111827;
+    }
+
+    .hint-btn.hint-stage2 {
+      background: #6b7280;
+      color: #f9fafb;
+    }
+
+    /* 그래프 팝업 모달 (데이터·그래프 방에서만 사용) */
+    .graph-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 40;
+    }
+
+    .graph-modal-inner {
+      width: min(420px, 90vw);
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 16px 18px 14px;
+      box-shadow: 0 18px 40px rgba(15, 23, 42, 0.6);
+    }
+
+    .graph-modal-inner h3 {
+      font-size: 16px;
+      margin-bottom: 6px;
+    }
+
+    .graph-preview {
+      margin: 10px 0;
+      height: 180px;
+      border-radius: 12px;
+      border: 1px dashed #cbd5e1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      color: #6b7280;
+      background: #f9fafb;
+    }
+
+    .graph-modal-close {
+      margin-top: 8px;
+      border-radius: 999px;
+      border: none;
+      padding: 8px 12px;
+      font-size: 13px;
+      background: #6366f1;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* 컨페티 */
+    .confetti {
+      position: fixed;
+      width: 6px;
+      height: 10px;
+      border-radius: 2px;
+      animation: confetti-fall 1.8s linear forwards;
+      z-index: 50;
+      pointer-events: none;
+    }
+
+    @keyframes confetti-fall {
+      0% {
+        opacity: 1;
+        transform: translate3d(0, -20px, 0) rotateZ(0deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translate3d(0, 120vh, 0) rotateZ(360deg);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .hud-title {
+        font-size: 14px;
+      }
+      .quiz-card {
+        padding: 18px 18px 16px;
+      }
+      .quiz-question-title {
+        font-size: 16px;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>파이썬 방탈출 게임 🎮</h1>
-  <p>
-    수업이 끝난 뒤, 이 페이지를 보면서 <strong>파이썬(Jupyter) 수업 내용을 복습</strong>해 보세요.<br>
-    각 챕터는 원하는 만큼 다시 실행하면서 즐겨도 됩니다.
-  </p>
-
-  <hr>
-
-  <!-- ===================== 챕터 1: 스트리밍 ===================== -->
-  <div class="chapter" id="chapter1">
-    <h2>📙 챕터 1. 아이돌 스트리밍 차트 분석</h2>
-    <p>
-      너는 이제 <strong>신인 아이돌 그룹의 멤버</strong>입니다.<br>
-      우리 그룹의 노래가 얼마나 사랑받고 있는지, <strong>데이터와 그래프</strong>로 확인해보세요!<br>
-    </p>
-
-    <!-- 공통 데이터 코드 (설명용) -->
-    <div class="code">
-import pandas as pd
-import matplotlib.pyplot as plt
-
-data = {
-    "day": ["월", "화", "수", "목", "금", "토", "일"] * 2,
-    "song": ["TITLE"] * 7 + ["B-SIDE"] * 7,
-    "streams": [100, 150, 180, 200, 300, 350, 400,
-                80, 90, 120, 130, 160, 170, 200]
-}
-
-df = pd.DataFrame(data)
-print(df.head())
+  <!-- 상단 HUD -->
+  <header class="hud">
+    <div class="hud-left">
+      <div class="hud-title">파이썬 방탈출 퀴즈</div>
+      <div class="hud-pill">창체 · 파이썬 기초 복습</div>
     </div>
-
-    <!-- Stage 1 -->
-    <div class="stage">
-      <h3>Stage 1. 일별 스트리밍 그래프 그리기</h3>
-
-      <!-- 1-1: 정답 맞히면 그래프 표시 -->
-      <div class="question" id="q1_1"
-           data-type="short"
-           data-answer="day"
-           data-hint1="그래프의 x축에는 '요일' 정보가 들어가요."
-           data-hint2="코드에서 x축으로 사용하는 열 이름은 day 입니다.">
-        <p><strong>[1-1]</strong>  
-          <strong>코드를 따라 데이터 입력하기</strong><br>
-          TITLE 곡의 일별 스트리밍 그래프를 그릴 때,<br>
-          <strong>x축에 사용할 열 이름(영문)</strong>을 적어보세요.
-        </p>
-        <input type="text" />
-
-        <div class="hint-buttons">
-          <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
-          <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
-          <button type="button" class="answer-btn">정답 보기</button>
-        </div>
-        <div class="hint-box"></div>
-        <div class="answer-box"></div>
+    <div class="hud-right">
+      <div class="avatar-tag">
+        <span id="avatarEmoji">🧑‍💻</span>
+        <span id="avatarLabel">오늘의 캐릭터</span>
       </div>
-
-      <!-- 그래프 영역 (정답 맞으면 표시) -->
-      <div id="graph1_box" style="display:none; margin-top:12px;">
-        <canvas id="graph1_canvas" width="500" height="250"></canvas>
-      </div>
+      <div class="score-tag" id="scoreTag">데이터·그래프 방 클리어: 0 / 8</div>
     </div>
+  </header>
 
-    <!-- Stage 1-2: TITLE 필터링 -->
-    <div class="stage">
-      <h3>Stage 1-2. TITLE 곡만 선택하기</h3>
-      <div class="question"
-           data-type="short"
-           data-answer="df[df['song']=='TITLE']|df[df['song'] == 'TITLE']|df_title=df[df['song']=='TITLE']|df_title = df[df['song']=='TITLE']"
-           data-hint1="df에서 song 열이 'TITLE'인 행만 골라서 사용합니다. 예: df[ df['song'] == 'TITLE' ]"
-           data-hint2="예시 코드:
-df_title = df[df['song'] == 'TITLE']">
-        <p><strong>[1-2]</strong>  
-          TITLE 곡만 선택해서 새로운 데이터프레임 <code>df_title</code>에 담는 코드를 적어보세요.
-        </p>
-        <input type="text" />
-
-        <div class="hint-buttons">
-          <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
-          <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
-          <button type="button" class="answer-btn">정답 보기</button>
+  <main class="map-wrapper">
+    <section class="map-area">
+      <!-- 메인 방 선택 화면 -->
+      <div class="room-select" id="roomSelectView">
+        <div>
+          <div class="room-select-title">어느 방부터 들어가 볼까요?</div>
+          <div class="room-select-sub">
+            출력·변수 / 데이터·그래프 / 문자열·정규식·배열 방 중 하나를 선택해<br />
+            파이썬 실력을 시험해 보세요!
+          </div>
         </div>
-        <div class="hint-box"></div>
-        <div class="answer-box"></div>
-      </div>
-    </div>
+        <div class="room-grid">
+          <!-- Room 1: 출력·변수 -->
+          <article class="room-card">
+            <div class="room-title">📘 ROOM 1 – 출력·변수</div>
+            <p class="room-tagline">
+              print, 변수, 코드 개념을 복습하는 기초 방입니다.
+            </p>
+            <div class="room-meta">
+              <span>레벨: 🧩✨⚡🔐</span>
+              <span>문제 상태: 튜토리얼만</span>
+            </div>
+            <button class="enter-btn" id="enterBasic">
+              입장하기
+            </button>
+          </article>
 
-    <!-- Stage 2 -->
-    <div class="stage">
-      <h3>Stage 2. 같은 데이터끼리 묶어보기 (요일별 합계 & 막대그래프)</h3>
+          <!-- Room 2: 데이터·그래프 -->
+          <article class="room-card">
+            <div class="room-title">📙 ROOM 2 – 데이터·그래프</div>
+            <p class="room-tagline">
+              데이터프레임과 그래프를 이용해 스트리밍 데이터를 분석해 봅니다.
+            </p>
+            <div class="room-meta">
+              <span>레벨: 🧩✨⚡🔐</span>
+              <span>문제 상태: 8문제 풀기</span>
+            </div>
+            <button class="enter-btn" id="enterData">
+              입장하기
+            </button>
+          </article>
 
-      <!-- 2-1 요일별 합계 -->
-      <div class="question"
-           data-type="short"
-           data-answer="df.groupby('day')['streams'].sum()|streams_by_day=df.groupby('day')['streams'].sum()|streams_by_day = df.groupby('day')['streams'].sum()"
-           data-hint1="groupby 함수를 사용해 'day' 기준으로 묶고, 'streams' 열에 sum()을 적용합니다."
-           data-hint2="예시 코드:
-streams_by_day = df.groupby('day')['streams'].sum()">
-        <p><strong>[2-1]</strong>  
-          요일(<code>day</code>)별 스트리밍 합계를 구하는 코드를 적어보세요.
-        </p>
-        <input type="text" />
-
-        <div class="hint-buttons">
-          <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
-          <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
-          <button type="button" class="answer-btn">정답 보기</button>
+          <!-- Room 3: 문자열·정규식·배열 -->
+          <article class="room-card">
+            <div class="room-title">📗 ROOM 3 – 문자열·정규식·배열</div>
+            <p class="room-tagline">
+              문자열 인덱싱, 정규식, 배열을 활용해 비밀 코드를 해독하는 방입니다.
+            </p>
+            <div class="room-meta">
+              <span>레벨: 🧩✨⚡🔐</span>
+              <span>문제 상태: 튜토리얼만</span>
+            </div>
+            <button class="enter-btn" id="enterString">
+              입장하기
+            </button>
+          </article>
         </div>
-        <div class="hint-box"></div>
-        <div class="answer-box"></div>
       </div>
 
-      <!-- 2-2 막대 그래프 -->
-      <div class="question"
-           data-type="short"
-           data-answer="streams_by_day.plot(kind='bar')"
-           data-hint1="pandas의 plot 함수에 kind='bar'를 주면 막대그래프를 그릴 수 있어요."
-           data-hint2="예시 코드:
-streams_by_day.plot(kind='bar')">
-        <p><strong>[2-2]</strong>  
-          <code>streams_by_day</code> 데이터를 이용해 <strong>막대 그래프</strong>를 그리는 코드를 적어보세요.
-        </p>
-        <input type="text" />
-
-        <div class="hint-buttons">
-          <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
-          <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
-          <button type="button" class="answer-btn">정답 보기</button>
-        </div>
-        <div class="hint-box"></div>
-        <div class="answer-box"></div>
-      </div>
-    </div>
-
-    <!-- Stage 3 -->
-    <div class="stage">
-      <h3>Stage 3. 자동 차트 생성 버튼 만들기 (함수 만들기)</h3>
-
-      <div class="question"
-           data-type="text"
-           data-answer="def plot_song(df, song_name):"
-           data-hint1="함수 안에서 song_name으로 행을 필터링하고, plt.plot으로 day와 streams를 그립니다."
-           data-hint2="예시 코드:
-def plot_song(df, song_name):
-    song_df = df[df['song'] == song_name]
-    plt.plot(song_df['day'], song_df['streams'])
-    plt.title(f'{song_name} 일별 스트리밍')
-    plt.xlabel('요일')
-    plt.ylabel('스트리밍 수')
-    plt.show()">
-        <p><strong>[3-1]</strong>  
-          노래 이름(<code>song_name</code>)을 넣으면 자동으로 그 노래의 일별 스트리밍 그래프를 그려주는 함수를 만들어 보세요.
-        </p>
-        <textarea rows="4"></textarea>
-
-        <div class="hint-buttons">
-          <button type="button" class="hint-btn" data-hint="1">힌트 1 보기</button>
-          <button type="button" class="hint-btn" data-hint="2">힌트 2 보기</button>
-          <button type="button" class="answer-btn">정답 보기</button>
-        </div>
-        <div class="hint-box"></div>
-        <div class="answer-box"></div>
-      </div>
-    </div>
-
-    <div class="result" id="chapter1_result"></div>
-  </div>
-
-  <!-- ===================== 챕터 2: 뇌섹남: 파이썬 ===================== -->
-  <div class="chapter" id="chapter2">
-    <h2>📘 챕터 2. 예능 스케줄: 「뇌섹남: 파이썬」 </h2>
-    <p>
-      컴백을 앞둔 당신(아이돌 멤버)은 컴백 홍보를 위해 한 예능 프로그램에 나가게 되었습니다.<br>
-      데뷔 초 인터뷰에서 밝혔던 당신의 관심사, 바로 <strong>'AI'</strong>와 <strong>'코딩'</strong>!<br>
-      매니저가 이번에 잡아온 스케줄은 바로 <strong>「뇌섹남: 파이썬」 편</strong>입니다.<br>
-      이제 방송에서 당신의 파이썬 실력을 보여주세요! 🔐
-    </p>
-
-    <!-- Stage 2 -->
-    <div class="stage">
-      <h3>Stage 2 — 정규식 퍼즐 🔍</h3>
-
-      <p><strong>[2-1]</strong>  
-        아래 문장에서 <strong>정규식을 사용해 숫자 2025를 찾는 코드</strong>를 적어보세요.
-      </p>
-
-      <div class="code">
-import re
-text = "탈출코드는 2025년에 공개된다!"
-      </div>
-
-      <div class="question"
-        data-type="short"
-        data-answer="re.findall(r'\\d+',text)|re.findall(r'\\d+', text)|re.search(r'\\d+',text).group()|re.search(r'\\d+', text).group()"
-        data-hint1="정규식에서 숫자를 찾을 때는 \\d+ 패턴을 사용합니다."
-        data-hint2="예시 코드:
-re.findall(r'\\d+', text)">
-        
-        <input type="text" />
-
-        <div class="hint-buttons">
-          <button class="hint-btn" data-hint="1" type="button">힌트 1 보기</button>
-          <button class="hint-btn" data-hint="2" type="button">힌트 2 보기</button>
-          <button class="answer-btn" type="button">정답 보기</button>
+      <!-- 데이터·그래프 방 맵 -->
+      <div class="room-map hidden" id="dataRoomView">
+        <div class="room-map-header">
+          <div>
+            <div class="room-map-title">📙 ROOM 2 – 데이터·그래프</div>
+            <div class="room-map-sub">
+              맵 곳곳의 🧩✨⚡🔐 아이콘을 눌러 문제를 풀어보세요.
+            </div>
+          </div>
+          <button class="back-btn" id="backToRooms">← 방 선택으로</button>
         </div>
 
-        <div class="hint-box"></div>
-        <div class="answer-box"></div>
-      </div>
-    </div>
-
-
-    <!-- Stage 3 -->
-    <div class="stage">
-      <h3>Stage 3 — 배열 조각 퍼즐 🧮</h3>
-
-      <p><strong>[3-1]</strong>  
-        아래 배열 <code>[2, 4, 6]</code>의 값을 <strong>모두 곱하는 코드</strong>를 적어보세요.
-      </p>
-
-      <div class="code">
-import numpy as np
-arr = np.array([2, 4, 6])
+        <div class="room-map-body">
+          <!-- 난이도별 문제 아이콘 (8문제 예시) -->
+          <!-- id는 질문 id와 동일하게 매핑 -->
+          <button class="spot spot-very-easy" data-q="1" style="top: 20%; left: 25%;">1</button>
+          <button class="spot spot-very-easy" data-q="2" style="top: 28%; left: 70%;">2</button>
+          <button class="spot spot-easy" data-q="3" style="top: 50%; left: 18%;">3</button>
+          <button class="spot spot-easy" data-q="4" style="top: 62%; left: 45%;">4</button>
+          <button class="spot spot-normal" data-q="5" style="top: 32%; left: 48%;">5</button>
+          <button class="spot spot-normal" data-q="6" style="top: 72%; left: 80%;">6</button>
+          <button class="spot spot-hard" data-q="7" style="top: 78%; left: 28%;">7</button>
+          <button class="spot spot-hard" data-q="8" style="top: 45%; left: 70%;">8</button>
+        </div>
       </div>
 
-      <div class="question"
-        data-type="short"
-        data-answer="2*4*6|arr.prod()|np.prod(arr)"
-        data-hint1="배열의 원소를 모두 곱할 때는 np.prod(arr)를 사용할 수도 있어요."
-        data-hint2="예시 코드:
-np.prod(arr)">
-        
-        <input type="text" />
-
-        <div class="hint-buttons">
-          <button class="hint-btn" data-hint="1" type="button">힌트 1 보기</button>
-          <button class="hint-btn" data-hint="2" type="button">힌트 2 보기</button>
-          <button class="answer-btn" type="button">정답 보기</button>
+      <!-- 퀴즈 카드 (데이터·그래프 방 + 튜토리얼 공용) -->
+      <article class="quiz-card hidden" id="quizCard">
+        <div class="quiz-header">
+          <div class="quiz-badges">
+            <div class="badge badge-progress" id="progressBadge">문제를 선택하세요</div>
+            <div class="badge badge-difficulty" id="levelBadge">난이도: 안내</div>
+            <div class="badge badge-part" id="partBadge">파트: -</div>
+          </div>
+          <button class="quiz-close" id="closeCardBtn" title="닫기">×</button>
         </div>
 
-        <div class="hint-box"></div>
-        <div class="answer-box"></div>
-      </div>
-    </div>
+        <div id="quizContent"></div>
+      </article>
+    </section>
+  </main>
 
-
-    <!-- Stage 4 -->
-    <div class="stage">
-      <h3>Stage 4 — 인덱싱 / 슬라이싱 ✂</h3>
-
-      <!-- 4-1 -->
-      <div class="question"
-        data-type="short"
-        data-answer="word[1]"
-        data-hint1="파이썬은 0부터 시작해요. 두 번째 글자 = 인덱스 1"
-        data-hint2="예시 코드:
-word[1]">
-
-        <p><strong>[4-1]</strong>  
-          문자열 <code>word = "HELLO"</code> 에서  
-          <strong>두 번째 글자</strong>를 꺼내는 코드를 적어보세요.
-        </p>
-
-        <input type="text" />
-
-        <div class="hint-buttons">
-          <button class="hint-btn" data-hint="1" type="button">힌트 1 보기</button>
-          <button class="hint-btn" data-hint="2" type="button">힌트 2 보기</button>
-          <button class="answer-btn" type="button">정답 보기</button>
-        </div>
-
-        <div class="hint-box"></div>
-        <div class="answer-box"></div>
-      </div>
-
-
-      <!-- 4-2 -->
-      <div class="question"
-        data-type="short"
-        data-answer="text[5:9]|text[5: ]|text[5:]"
-        data-hint1="'ROOM'은 인덱스 5부터 시작해요."
-        data-hint2="예시 코드:
-text[5:9]">
-
-        <p><strong>[4-2]</strong>  
-          문자열 <code>text = "ESCAPEROOM"</code> 에서  
-          <strong>"ROOM"</strong>을 꺼내는 코드를 적어보세요.
-        </p>
-
-        <input type="text" />
-
-        <div class="hint-buttons">
-          <button class="hint-btn" data-hint="1" type="button">힌트 1 보기</button>
-          <button class="hint-btn" data-hint="2" type="button">힌트 2 보기</button>
-          <button class="answer-btn" type="button">정답 보기</button>
-        </div>
-
-        <div class="hint-box"></div>
-        <div class="answer-box"></div>
-      </div>
-    </div>
-
-    <button onclick="checkChapter('chapter2')" type="button">챕터 2 점수 확인하기</button>
-    <div class="result" id="chapter2_result"></div>
-  </div>
-
-
-  <!-- ===================== SCRIPT ===================== -->
   <script>
-    // 간단한 그래프 그리기 (Stage 1-1 정답일 때)
-    function drawGraph1() {
-      const canvas = document.getElementById("graph1_canvas");
-      if (!canvas) return;
-      const ctx = canvas.getContext("2d");
-      const days = ["월","화","수","목","금","토","일"];
-      const streams = [100,150,180,200,300,350,400];
+    // ===== 랜덤 캐릭터 =====
+    const avatars = [
+      { emoji: "🧑‍💻", label: "코딩 연습생" },
+      { emoji: "🧑‍🎤", label: "아이돌 워크돌" },
+      { emoji: "🧑‍🏫", label: "파이썬 조교" },
+      { emoji: "🧑‍🚀", label: "데이터 탐사 요원" },
+      { emoji: "🧑‍🔬", label: "실험실 연구돌" }
+    ];
 
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      const marginLeft = 40;
-      const marginBottom = 30;
-      const width = canvas.width;
-      const height = canvas.height;
-      const graphWidth = width - marginLeft - 10;
-      const graphHeight = height - marginBottom - 20;
-
-      // 축
-      ctx.strokeStyle = "#333";
-      ctx.beginPath();
-      ctx.moveTo(marginLeft, 10);
-      ctx.lineTo(marginLeft, 10 + graphHeight);
-      ctx.lineTo(marginLeft + graphWidth, 10 + graphHeight);
-      ctx.stroke();
-
-      const maxVal = Math.max(...streams);
-      const stepX = graphWidth / (days.length - 1);
-
-      // 라인
-      ctx.strokeStyle = "#1976d2";
-      ctx.fillStyle = "#1976d2";
-      ctx.beginPath();
-      streams.forEach((v, i) => {
-        const x = marginLeft + stepX * i;
-        const y = 10 + graphHeight - (v / maxVal) * graphHeight;
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.stroke();
-
-      // 점
-      streams.forEach((v, i) => {
-        const x = marginLeft + stepX * i;
-        const y = 10 + graphHeight - (v / maxVal) * graphHeight;
-        ctx.beginPath();
-        ctx.arc(x, y, 3, 0, Math.PI * 2);
-        ctx.fill();
-      });
-
-      // x축 라벨
-      ctx.fillStyle = "#000";
-      ctx.font = "12px sans-serif";
-      days.forEach((d, i) => {
-        const x = marginLeft + stepX * i;
-        const y = 10 + graphHeight + 15;
-        ctx.fillText(d, x - 8, y);
-      });
-
-      // 제목
-      ctx.font = "14px sans-serif";
-      ctx.fillText("TITLE 일별 스트리밍 (예시 그래프)", marginLeft, 20);
+    function pickRandomAvatar() {
+      const a = avatars[Math.floor(Math.random() * avatars.length)];
+      document.getElementById("avatarEmoji").textContent = a.emoji;
+      document.getElementById("avatarLabel").textContent = a.label;
     }
 
-    // 힌트 및 정답 보기 버튼 기능 + 1-1 자동 그래프
-    document.addEventListener("DOMContentLoaded", function () {
-      const questions = document.querySelectorAll(".question");
+    // ===== 유틸 =====
+    function normalize(str) {
+      return (str || "").trim().replace(/\s+/g, "").toLowerCase();
+    }
 
-      questions.forEach(q => {
-        const hintBox = q.querySelector(".hint-box");
-        const answerBox = q.querySelector(".answer-box");
+    // ===== 데이터·그래프 방 퀴즈 데이터 =====
+    // difficulty: very_easy(🧩), easy(✨), normal(⚡), hard(🔐)
+    const dataQuestions = [
+      {
+        id: 1,
+        difficulty: "very_easy",
+        part: "데이터·그래프",
+        type: "mc",
+        text: "Pandas에서 엑셀처럼 행과 열로 이루어진 표 형식 데이터를 저장하는 자료 구조는 무엇인가요?",
+        options: ["Series", "DataFrame", "Array", "List"],
+        answer: "DataFrame",
+        subtitle: "표 형태(행+열)의 데이터를 다룰 때는 보통 DataFrame을 사용합니다."
+      },
+      {
+        id: 2,
+        difficulty: "very_easy",
+        part: "데이터·그래프",
+        type: "mc",
+        text: "다음 중 DataFrame df의 앞부분(처음 5행)을 간단히 확인하는 코드로 알맞은 것은?",
+        options: ["df.top()", "df.head()", "df.info()", "df.print()"],
+        answer: "df.head()",
+        subtitle: "head() 함수는 DataFrame의 위쪽 일부만 빠르게 살펴볼 때 사용합니다."
+      },
+      {
+        id: 3,
+        difficulty: "easy",
+        part: "데이터·그래프",
+        type: "short",
+        text: "DataFrame df에서 'day' 열만 선택하려고 합니다.\n'day' 열 하나만 가져오는 코드를 적어보세요.",
+        answers: ["df['day']", "df[\"day\"]"],
+        subtitle: "df[열이름] 형태로 특정 열을 선택할 수 있어요."
+      },
+      {
+        id: 4,
+        difficulty: "easy",
+        part: "데이터·그래프",
+        type: "mc",
+        text:
+          "스트리밍 데이터 df에서 노래 제목(song)이 'TITLE'인 행만 고르고 싶습니다. 가장 알맞은 코드는 무엇인가요?",
+        options: [
+          "df['song'] == 'TITLE'",
+          "df[df['song'] == 'TITLE']",
+          "df['TITLE' == song]",
+          "df.song = 'TITLE'"
+        ],
+        answer: "df[df['song'] == 'TITLE']",
+        subtitle: "df[조건] 형태로 조건에 맞는 행만 골라낼 수 있습니다."
+      },
+      {
+        id: 5,
+        difficulty: "normal",
+        part: "데이터·그래프",
+        type: "short",
+        text:
+          "df 안에 day(요일)와 streams(재생 수) 열이 있습니다.\n요일(day)별 스트리밍 합계를 구하는 코드를 한 줄로 적어보세요.",
+        answers: [
+          "df.groupby('day')['streams'].sum()",
+          "streams_by_day = df.groupby('day')['streams'].sum()",
+          "streams_by_day=df.groupby('day')['streams'].sum()"
+        ],
+        subtitle:
+          "groupby(기준열)['계산할열'].sum() 형태를 떠올려 보세요."
+      },
+      {
+        id: 6,
+        difficulty: "normal",
+        part: "데이터·그래프",
+        type: "short",
+        text:
+          "앞에서 구한 streams_by_day 데이터를 이용해 막대 그래프를 그리려고 합니다.\n알맞은 코드를 적어보세요.",
+        answers: [
+          "streams_by_day.plot(kind='bar')",
+          "streams_by_day.plot(kind=\"bar\")"
+        ],
+        subtitle:
+          "pandas Series나 DataFrame은 .plot(kind='bar')처럼 plot 함수를 사용할 수 있어요.",
+        showGraphPopup: true
+      },
+      {
+        id: 7,
+        difficulty: "hard",
+        part: "데이터·그래프",
+        type: "short",
+        text:
+          "요일(day)별 스트리밍의 '평균'을 구하려고 합니다.\nstreams 열 기준으로 요일별 평균 스트리밍 수를 계산하는 코드를 적어보세요.",
+        answers: [
+          "df.groupby('day')['streams'].mean()",
+          "streams_by_day_mean = df.groupby('day')['streams'].mean()",
+          "streams_by_day_mean=df.groupby('day')['streams'].mean()"
+        ],
+        subtitle:
+          "합계가 sum()이라면, 평균은 mean() 함수를 사용하면 됩니다."
+      },
+      {
+        id: 8,
+        difficulty: "hard",
+        part: "데이터·그래프",
+        type: "short",
+        text:
+          "df를 노래 제목(song)별로 나누어, 각 노래의 일별 스트리밍 곡선을 한 그래프에 모두 그리려고 합니다.\nfor문과 groupby를 이용해 song별로 day와 streams를 그리는 코드를 완성해보세요.",
+        answers: [
+          "for name, g in df.groupby('song'):\n    plt.plot(g['day'], g['streams'], label=name)\nplt.legend()",
+          "for name,g in df.groupby('song'):\n    plt.plot(g['day'], g['streams'], label=name)\nplt.legend()"
+        ],
+        subtitle:
+          "groupby('song')를 사용하면 노래 제목별로 데이터를 나누어 반복문에서 사용할 수 있습니다."
+      }
+    ];
 
-        // 힌트 버튼
-        const hintButtons = q.querySelectorAll(".hint-btn");
-        hintButtons.forEach(btn => {
-          btn.addEventListener("click", function () {
-            const idx = btn.getAttribute("data-hint");
-            // 힌트 2는 힌트 1 사용 후에만
-            if (idx === "2") {
-              const firstHintBtn = q.querySelector('.hint-btn[data-hint="1"]');
-              if (!firstHintBtn || !firstHintBtn.classList.contains("used")) {
-                if (hintBox) hintBox.textContent = "먼저 힌트 1을 확인해 보세요.";
-                return;
-              }
-            }
-            const hintText = q.getAttribute("data-hint" + idx);
-            if (hintBox) hintBox.textContent = hintText || "";
-            btn.classList.add("used");
-          });
+    const totalQuestions = dataQuestions.length;
+    const answeredCorrect = {};
+    let gameCleared = false;
+
+    const roomSelectView = document.getElementById("roomSelectView");
+    const dataRoomView = document.getElementById("dataRoomView");
+    const quizCardEl = document.getElementById("quizCard");
+    const quizContentEl = document.getElementById("quizContent");
+    const progressBadgeEl = document.getElementById("progressBadge");
+    const levelBadgeEl = document.getElementById("levelBadge");
+    const partBadgeEl = document.getElementById("partBadge");
+    const scoreTagEl = document.getElementById("scoreTag");
+    const closeCardBtn = document.getElementById("closeCardBtn");
+
+    function updateScoreTag() {
+      const cleared = Object.keys(answeredCorrect).length;
+      scoreTagEl.textContent = `데이터·그래프 방 클리어: ${cleared} / ${totalQuestions}`;
+    }
+
+    // 난이도 배지 설정 (아이콘 + 텍스트)
+    function setDifficultyBadge(diffKey) {
+      const map = {
+        very_easy: { icon: "🧩", label: "아주 쉬움" },
+        easy: { icon: "✨", label: "쉬움" },
+        normal: { icon: "⚡", label: "보통" },
+        hard: { icon: "🔐", label: "어려움" }
+      };
+      const info = map[diffKey] || { icon: "⚡", label: "보통" };
+
+      levelBadgeEl.textContent = `${info.icon} 난이도: ${info.label}`;
+      levelBadgeEl.classList.remove("very_easy", "easy", "normal", "hard");
+      levelBadgeEl.classList.add(diffKey || "normal");
+    }
+
+    function setPartBadge(part) {
+      partBadgeEl.textContent = part ? `파트: ${part}` : "파트: -";
+    }
+
+    function getDataQuestionById(id) {
+      return dataQuestions.find((q) => q.id === id);
+    }
+
+    // ===== 튜토리얼 카드 (Room1 / Room3) =====
+    function openTutorialCard(roomType) {
+      quizCardEl.classList.remove("hidden");
+
+      let title = "";
+      let body = "";
+      let partLabel = "";
+
+      if (roomType === "basic") {
+        title = "📘 ROOM 1 – 출력·변수 튜토리얼";
+        partLabel = "출력·변수";
+        body = `
+          <p class="quiz-subtitle">
+            이 방에서는 <strong>print, 변수, 코드</strong>와 같이 파이썬의 가장 기초적인 개념을 복습할 예정입니다.<br>
+            실제 수업에서는 이 방에서 가장 쉬운 문제부터 차근차근 풀어볼 거예요.
+          </p>
+          <p class="quiz-subtitle" style="margin-top:8px;">
+            지금은 튜토리얼만 준비되어 있어요.<br>
+            <strong>데이터·그래프 방</strong>에 먼저 입장해 문제를 풀어보고,<br>
+            다음 시간에 이 방의 문제도 채워 넣어볼까요?
+          </p>
+        `;
+      } else if (roomType === "string") {
+        title = "📗 ROOM 3 – 문자열·정규식·배열 튜토리얼";
+        partLabel = "문자열·정규식·배열";
+        body = `
+          <p class="quiz-subtitle">
+            이 방에서는 <strong>문자열 인덱싱, 슬라이싱, 정규식, 배열</strong>을 이용해 비밀 코드를 해독하게 됩니다.<br>
+          </p>
+          <p class="quiz-subtitle" style="margin-top:8px;">
+            현재는 튜토리얼만 준비된 상태입니다.<br>
+            먼저 <strong>데이터·그래프 방</strong>에서 문제를 풀어보고,<br>
+            이후 이 방에 난이도별 문제를 추가해 확장할 수 있어요.
+          </p>
+        `;
+      }
+
+      progressBadgeEl.textContent = "튜토리얼";
+      setDifficultyBadge(null);
+      setPartBadge(partLabel);
+
+      quizContentEl.innerHTML = `
+        <div>
+          <h2 class="quiz-question-title">${title}</h2>
+          ${body}
+        </div>
+        <div class="quiz-footer">
+          <button class="submit-btn" id="closeTutorialBtn">돌아가기</button>
+          <div class="feedback"></div>
+        </div>
+      `;
+
+      document
+        .getElementById("closeTutorialBtn")
+        .addEventListener("click", () => {
+          quizCardEl.classList.add("hidden");
         });
+    }
 
-        // 정답 버튼
-        const answerBtn = q.querySelector(".answer-btn");
-        if (answerBtn) {
-          answerBtn.addEventListener("click", function () {
-            const ansAttr = q.getAttribute("data-answer");
-            if (!ansAttr) return;
-            const firstAnswer = ansAttr.split("|")[0];
-            if (answerBox) answerBox.textContent = "정답: " + firstAnswer;
-            answerBtn.classList.add("used");
+    // ===== 데이터·그래프 방 문제 렌더링 =====
+    function renderDataQuestion(q) {
+      quizCardEl.classList.remove("hidden");
+
+      const indexInArray = dataQuestions.findIndex((qq) => qq.id === q.id);
+      progressBadgeEl.textContent = `문제 ${indexInArray + 1} / ${totalQuestions}`;
+      setDifficultyBadge(q.difficulty);
+      setPartBadge(q.part);
+
+      const subtitleHtml = q.subtitle
+        ? `<p class="quiz-subtitle">${q.subtitle.replace(/\n/g, "<br>")}</p>`
+        : "";
+
+      const html = `
+        <div>
+          <h2 class="quiz-question-title">${q.text.replace(/\n/g, "<br>")}</h2>
+          ${subtitleHtml}
+        </div>
+        <div class="quiz-footer">
+          <div id="interactionArea"></div>
+          <button class="submit-btn" id="submitBtn" disabled>제출하기</button>
+          <div class="feedback" id="feedback"></div>
+        </div>
+      `;
+      quizContentEl.innerHTML = html;
+
+      const interactionArea = document.getElementById("interactionArea");
+      const submitBtn = document.getElementById("submitBtn");
+      const feedbackEl = document.getElementById("feedback");
+      const subtitleEl = quizContentEl.querySelector(".quiz-subtitle");
+
+      // 처음에는 힌트(subtitle)를 숨김
+      if (subtitleEl) {
+        subtitleEl.style.display = "none";
+      }
+
+      let selectedOption = null;
+      let shortInputEl = null;
+
+      // 입력 UI 구성
+      if (q.type === "mc") {
+        const optionsWrap = document.createElement("div");
+        optionsWrap.className = "options";
+        q.options.forEach((opt) => {
+          const btn = document.createElement("button");
+          btn.className = "option-btn";
+          btn.type = "button";
+          btn.innerHTML = `<span>${opt}</span>`;
+          btn.addEventListener("click", () => {
+            selectedOption = opt;
+            submitBtn.disabled = false;
+            document
+              .querySelectorAll(".option-btn")
+              .forEach((b) => b.classList.remove("selected"));
+            btn.classList.add("selected");
           });
+          optionsWrap.appendChild(btn);
+        });
+        interactionArea.appendChild(optionsWrap);
+      } else if (q.type === "short") {
+        const input = document.createElement("textarea");
+        input.className = "short-input";
+        input.rows = 3;
+        input.placeholder = "여기에 코드를 적어보세요.";
+        shortInputEl = input;
+        interactionArea.appendChild(input);
+        input.addEventListener("input", () => {
+          if (input.dataset.hintFilled === "1") {
+            input.style.color = "#111827";
+            input.dataset.hintFilled = "0";
+          }
+          submitBtn.disabled = !input.value.trim();
+        });
+      }
+
+      // 힌트 버튼
+      const quizFooter = submitBtn.parentElement;
+      const hintBtn = document.createElement("button");
+      hintBtn.type = "button";
+      hintBtn.className = "hint-btn";
+      hintBtn.textContent = "힌트 보기";
+      quizFooter.insertBefore(hintBtn, feedbackEl);
+
+      let hintStage = 0; // 0: 없음, 1: subtitle 표시, 2: 입력칸에 정답 채우기
+
+      hintBtn.addEventListener("click", () => {
+        if (hintStage === 0) {
+          if (subtitleEl) {
+            subtitleEl.style.display = "block";
+            subtitleEl.style.color = "#111827";
+            subtitleEl.style.fontWeight = "700";
+          }
+          hintBtn.classList.add("hint-stage1");
+          hintStage = 1;
+        } else if (hintStage === 1) {
+          const correctText =
+            q.type === "mc"
+              ? q.answer
+              : (q.answers && q.answers[0]) || "";
+
+          if (q.type === "short" && shortInputEl) {
+            shortInputEl.value = correctText;
+            shortInputEl.style.color = "#9ca3af";
+            shortInputEl.dataset.hintFilled = "1";
+            submitBtn.disabled = false;
+          } else if (q.type === "mc") {
+            const optionButtons = document.querySelectorAll(".option-btn");
+            optionButtons.forEach((btn) => {
+              const text = btn.innerText.trim();
+              btn.classList.remove("selected");
+              if (text === correctText) {
+                btn.classList.add("selected");
+                btn.style.color = "#6b7280";
+                selectedOption = correctText;
+                submitBtn.disabled = false;
+              }
+            });
+          }
+
+          hintBtn.classList.add("hint-stage2");
+          hintStage = 2;
         }
       });
 
-      // Stage 1-1: 입력 중에 자동으로 그래프 표시
-      const q11 = document.getElementById("q1_1");
-      if (q11) {
-        const input = q11.querySelector('input[type="text"]');
-        const ansAttr = q11.getAttribute("data-answer");
-        if (input && ansAttr) {
-          const answers = ansAttr
-            .split("|")
-            .map(a => a.trim().replace(/\\s+/g, "").toLowerCase());
-          input.addEventListener("input", function () {
-            const user = (input.value || "").trim().replace(/\\s+/g, "").toLowerCase();
-            const box = document.getElementById("graph1_box");
-            if (!box) return;
-            if (answers.includes(user)) {
-              box.style.display = "block";
-              drawGraph1();
-            } else {
-              box.style.display = "none";
-            }
+      // 제출하기
+      submitBtn.addEventListener("click", () => {
+        let isCorrect = false;
+
+        if (q.type === "mc") {
+          if (!selectedOption) return;
+          isCorrect = selectedOption === q.answer;
+
+          document.querySelectorAll(".option-btn").forEach((btn) => {
+            const text = btn.innerText.trim();
+            if (text === q.answer) btn.classList.add("correct");
+            if (text === selectedOption && text !== q.answer)
+              btn.classList.add("wrong");
           });
+        } else if (q.type === "short") {
+          const raw = shortInputEl ? shortInputEl.value : "";
+          const userNorm = normalize(raw);
+          const correctNorms = (q.answers || []).map((a) => normalize(a));
+          isCorrect = correctNorms.includes(userNorm);
         }
+
+        if (isCorrect) {
+          feedbackEl.textContent = "✅ 정답입니다! 이 문제를 클리어했어요.";
+          feedbackEl.className = "feedback correct";
+
+          if (!answeredCorrect[q.id]) {
+            answeredCorrect[q.id] = true;
+            updateScoreTag();
+            const spot = document.querySelector(
+              `.spot[data-q="${q.id}"]`
+            );
+            if (spot) spot.classList.add("spot-cleared");
+          }
+
+          if (q.showGraphPopup) {
+            openGraphModal();
+          }
+
+          checkGameClear();
+        } else {
+          feedbackEl.innerHTML =
+            "❌ 아쉽지만 오답입니다. <br>작성한 답안과 힌트를 다시 한 번 살펴보세요!";
+          feedbackEl.className = "feedback wrong";
+        }
+      });
+    }
+
+    // 그래프 팝업 (streams_by_day.plot(...) 문제용)
+    function openGraphModal() {
+      const modal = document.createElement("div");
+      modal.className = "graph-modal";
+      modal.innerHTML = `
+        <div class="graph-modal-inner">
+          <h3>📊 그래프 예시 확인</h3>
+          <p class="quiz-subtitle">
+            정답 코드를 실행하면, 아래와 같이 요일별 스트리밍 합계를 보여주는 막대 그래프가 그려집니다.
+          </p>
+          <div class="graph-preview">
+            (여기에 요일별 막대 그래프 이미지를 넣을 수 있어요.)
+          </div>
+          <button class="graph-modal-close">확인</button>
+        </div>
+      `;
+      document.body.appendChild(modal);
+
+      modal.querySelector(".graph-modal-close").addEventListener("click", () => {
+        modal.remove();
+      });
+    }
+
+    // 컨페티 & 게임 클리어
+    function launchConfetti() {
+      const colors = ["#f97316", "#22c55e", "#3b82f6", "#a855f7", "#eab308"];
+      for (let i = 0; i < 140; i++) {
+        const c = document.createElement("div");
+        c.className = "confetti";
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.background =
+          colors[Math.floor(Math.random() * colors.length)];
+        c.style.animationDelay = Math.random() * 0.6 + "s";
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 2500);
       }
+    }
+
+    function showClearMessage() {
+      quizCardEl.classList.remove("hidden");
+      const cleared = Object.keys(answeredCorrect).length;
+      const percent = Math.round((cleared / totalQuestions) * 100);
+      progressBadgeEl.textContent = "ROOM 2 클리어! 🎉";
+      setDifficultyBadge("normal");
+      setPartBadge("데이터·그래프");
+
+      quizContentEl.innerHTML = `
+        <div>
+          <h2 class="final-title">데이터·그래프 방 탈출 성공!</h2>
+          <p class="final-score">총 <strong>${totalQuestions}</strong>문제 중 <strong>${cleared}</strong>문제를 맞혔어요. (${percent}%)</p>
+          <p class="final-msg">
+            다른 방(출력·변수 / 문자열·정규식·배열)도 준비되면<br>
+            전체 파이썬 방탈출을 완성해 볼 수 있어요.
+          </p>
+        </div>
+        <div class="quiz-footer">
+          <div class="final-actions">
+            <button class="secondary-btn" id="backToMapBtn">방 선택으로 돌아가기</button>
+          </div>
+          <div class="feedback"></div>
+        </div>
+      `;
+
+      document
+        .getElementById("backToMapBtn")
+        .addEventListener("click", () => {
+          quizCardEl.classList.add("hidden");
+          showRoomSelect();
+        });
+    }
+
+    function checkGameClear() {
+      if (gameCleared) return;
+      const cleared = Object.keys(answeredCorrect).length;
+      if (cleared === totalQuestions) {
+        gameCleared = true;
+        launchConfetti();
+        showClearMessage();
+      }
+    }
+
+    // ===== 뷰 전환 =====
+    function showRoomSelect() {
+      dataRoomView.classList.add("hidden");
+      roomSelectView.classList.remove("hidden");
+    }
+
+    function enterDataRoom() {
+      roomSelectView.classList.add("hidden");
+      dataRoomView.classList.remove("hidden");
+      quizCardEl.classList.add("hidden");
+    }
+
+    // ===== 이벤트 바인딩 =====
+    document.getElementById("enterBasic").addEventListener("click", () => {
+      openTutorialCard("basic");
     });
 
-    // 챕터 채점 기능 (chapter2용)
-    function checkChapter(chapterId) {
-      const chapter = document.getElementById(chapterId);
-      const questions = chapter.querySelectorAll('.question');
-      let total = 0;
-      let correct = 0;
+    document.getElementById("enterData").addEventListener("click", () => {
+      enterDataRoom();
+    });
 
-      questions.forEach(q => {
-        const type = q.getAttribute('data-type');
-        const answerAttr = q.getAttribute('data-answer');
-        if (!answerAttr || type !== 'short') return;
+    document.getElementById("enterString").addEventListener("click", () => {
+      openTutorialCard("string");
+    });
 
-        const answers = answerAttr.split("|").map(a => a.trim().replace(/\\s+/g, "").toLowerCase());
-        const input = q.querySelector('input[type="text"], textarea');
-        if (!input) return;
+    document.getElementById("backToRooms").addEventListener("click", () => {
+      showRoomSelect();
+    });
 
-        const userRaw = (input.value || "").trim();
-        const user = userRaw.replace(/\\s+/g, "").toLowerCase();
-
-        total += 1;
-        if (answers.includes(user)) {
-          correct += 1;
-        }
+    document.querySelectorAll(".spot").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = parseInt(btn.getAttribute("data-q"), 10);
+        const q = getDataQuestionById(id);
+        if (q) renderDataQuestion(q);
       });
+    });
 
-      const resultEl = document.getElementById(chapterId + "_result");
-      resultEl.textContent = `정답: ${correct} / ${total} 문제`;
-    }
+    closeCardBtn.addEventListener("click", () => {
+      quizCardEl.classList.add("hidden");
+    });
+
+    // ===== 초기화 =====
+    pickRandomAvatar();
+    updateScoreTag();
   </script>
 </body>
 </html>
